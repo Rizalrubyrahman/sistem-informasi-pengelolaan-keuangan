@@ -1,0 +1,31 @@
+body {
+    font-family: "poppins";
+}
+#logo {
+    max-height: 80px;
+    max-width: 100%;
+    margin-top: 30px;
+}
+#form-logo {
+    align-items: center;
+    display: flex;
+}
+.card {
+    border-radius: 5px;
+    margin-top: 70px;
+    padding-bottom: 40px;
+}
+#wellcome {
+    text-align: center;
+    margin-top: 20px;
+}
+#btnLogin {
+    width: 100%;
+}
+@font-face {
+    font-family: "poppins";
+    src: url("../font/Poppins/Poppins-Regular.ttf");
+}
+#messageLogin {
+    font-size: 11.5pt;
+}
