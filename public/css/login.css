@@ -1,10 +1,16 @@
 body {
     font-family: "poppins";
+    background-image: url("../images/bg_login.png");
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 #logo {
-    max-height: 80px;
+    max-height: 200px;
     max-width: 100%;
-    margin-top: 30px;
 }
 #form-logo {
     align-items: center;
@@ -12,8 +18,7 @@ body {
 }
 .card {
     border-radius: 5px;
-    margin-top: 70px;
-    padding-bottom: 40px;
+    margin-top: 90px;
 }
 #wellcome {
     text-align: center;
@@ -21,6 +26,8 @@ body {
 }
 #btnLogin {
     width: 100%;
+    background-color: #1da750;
+    border-color: #1da750;
 }
 @font-face {
     font-family: "poppins";
