@@ -7,6 +7,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo.png') }}">
 </head>
 <body>
 
@@ -21,7 +22,7 @@
                                 <img id="logo" src="{{ asset('images/logo.png') }}" alt="Logo">
                             </div>
                             <div style="padding-bottom:50px;">
-                                <h2 id="wellcome">Selamat Datang</h2>
+                                &nbsp;
                             </div>
 
                         </div>

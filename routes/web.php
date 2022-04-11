@@ -18,4 +18,4 @@ Route::get('/','AuthController@viewLogin')->name('login');
 Route::post('/login','AuthController@login');
 Route::post('/logout','AuthController@logout');
 
-Route::get('/home', 'HomeController@index');
+Route::get('/dashboard', 'DashboardController@dashboard');

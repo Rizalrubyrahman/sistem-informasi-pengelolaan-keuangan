@@ -29,7 +29,7 @@ class AuthController extends Controller
         {
             if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
             {
-                return redirect('/home');
+                return redirect('/dashboard');
             }
             else
             {

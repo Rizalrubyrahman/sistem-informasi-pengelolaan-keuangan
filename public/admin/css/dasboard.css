@@ -1,0 +1,155 @@
+#banner-dashboard {
+    background-position: center;
+    background-size: cover;
+    background-image: url("../images/bg.png");
+    height: 250px;
+    padding-bottom: 80px;
+    border-radius: 20px;
+}
+#wdiget-container {
+    height: 210px;
+    position: relative;
+}
+#widget {
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    margin: auto;
+}
+#widget-item-1 {
+    display: inline-block;
+    width: 100px;
+}
+#icon-widget-1 {
+    font-size: 30px;
+    color: white;
+}
+#widget-text-1 {
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+}
+#round-widget-1 {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    background-color: #ff7878;
+}
+#widget-item-2 {
+    display: inline-block;
+    width: 100px;
+}
+#icon-widget-2 {
+    font-size: 30px;
+    color: white;
+}
+#widget-text-2 {
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+}
+#round-widget-2 {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    background-color: #ffc898;
+}
+
+#widget-item-3 {
+    display: inline-block;
+    width: 100px;
+}
+#icon-widget-3 {
+    font-size: 30px;
+    color: white;
+}
+#widget-text-3 {
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+}
+#round-widget-3 {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    background-color: #cdf2ca;
+}
+
+#widget-item-4 {
+    display: inline-block;
+    width: 100px;
+}
+#icon-widget-4 {
+    font-size: 30px;
+    color: white;
+}
+#widget-text-4 {
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+}
+#round-widget-4 {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    background-color: #fff89a;
+}
+.container-card {
+    background-color: #f4f6f3;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.card-content {
+    border-radius: 15px;
+}
+
+#widget-subtitle {
+    font-size: 12pt;
+    color: white;
+}
+#header-widget {
+    margin-left: 12px;
+}
+#imageGIF {
+    margin-top: -90px;
+}
+@media only screen and (max-width: 800px) {
+    #imageGIF {
+        display: none;
+    }
+}
+#halo {
+    font-size: 24pt;
+    color: white;
+    font-weight: 100;
+}
+#nickname {
+    font-size: 24pt;
+    color: white;
+    font-weight: 800;
+}
+.flatpickr-calendar.inline .flatpickr-day.selected,
+.flatpickr-calendar.inline .flatpickr-day.selected:focus,
+.flatpickr-calendar.inline .flatpickr-day.selected:hover {
+    background: #57baab;
+}
