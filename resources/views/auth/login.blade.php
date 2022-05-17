@@ -65,7 +65,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-4" id="btnLogin">
+                            <button type="submit" class="btn mt-4" id="btnLogin">
                                 Masuk
                             </button>
                             <br><br><br>

@@ -26,8 +26,9 @@ body {
 }
 #btnLogin {
     width: 100%;
-    background-color: #57baab;
-    border-color: #57baab;
+    background-color: #1cbb8c;
+    border-color: #1cbb8c;
+    color: white;
 }
 @font-face {
     font-family: "poppins";
