@@ -11,7 +11,7 @@
             <div class="card-body " >
                 <div class="row">
                     <div class="col-md-1"></div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <div id="wdiget-container">
                             <div id="header-widget">
                                 <span id="halo">Halo</span><span id="nickname"> {{ auth()->user()->name }}</span><br>
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="d-flex justify-content-end">
                             <img id="imageGIF" src="{{ asset('admin/images/vector1.gif') }}" alt="" srcset="">
                         </div>
