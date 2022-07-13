@@ -29,3 +29,13 @@ Route::prefix('stok_barang')->group(function () {
     Route::post('ubah/{productId}', 'ProductController@productUpdate');
     Route::post('hapus/{productId}', 'ProductController@productDelete');
 });
+Route::prefix('transaksi')->group(function () {
+    Route::get('/','ProductController@productView');
+    Route::get('tambah','ProductController@productInput');
+    Route::post('tambah','ProductController@productStore');
+    Route::get('cari','ProductController@productSearch');
+    Route::get('filter','ProductController@productFilter');
+    Route::get('ubah/{productId}', 'ProductController@productEdit');
+    Route::post('ubah/{productId}', 'ProductController@productUpdate');
+    Route::post('hapus/{productId}', 'ProductController@productDelete');
+});
