@@ -15,12 +15,12 @@
             </li>
             <li class="sidebar-item {{ Request::is('stok_barang') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ url('stok_barang') }}">
-                    <i class="fa-solid fa-box-archive align-middle"></i> <span class="align-middle">Stok Barang</span>
+                    <i class="fas fa-box-archive align-middle"></i> <span class="align-middle">Stok Barang</span>
                 </a>
             </li>
             <li class="sidebar-item {{ Request::is('transaksi') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ url('transaksi') }}">
-                    </i><i class="fa-solid fa-file-alt align-middle"></i> <span class="align-middle">Transaksi</span>
+                    </i><i class="fas fa-file-alt align-middle"></i> <span class="align-middle">Transaksi</span>
                 </a>
             </li>
         </ul>

@@ -94,7 +94,6 @@
                         <td align="center">{{ $loop->iteration }}</td>
                         <td>{{ $product->product_name }}</td>
                         <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
-                        <td>{{ $product->product_price + 10000 }}</td>
                         <td align="center">{{ $product->qty }}</td>
                         <td align="center">
                             <a href="{{ url('/stok_barang/ubah/'.$product->product_id) }}" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
@@ -200,7 +199,6 @@
         })
         $('#filter').on('change',function(){
             $value=$(this).val();
-            console.log($value);
             $.ajax({
                     type : 'get',
                     url : '{{url("/stok_barang/filter")}}',

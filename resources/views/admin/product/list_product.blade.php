@@ -85,7 +85,7 @@
         $value=$(this).val();
         $.ajax({
                 type : 'get',
-                url : '{{url("/stok_barang/cari")}}',
+                url : '{{url("/stok_barang/cari_list")}}',
                 data:{'search':$value},
                 success:function(data){
                     $('tbody').html(data);
@@ -95,7 +95,7 @@
     })
     $('#filter').on('change',function(){
         $value=$(this).val();
-        console.log($value);
+
         $.ajax({
                 type : 'get',
                 url : '{{url("/stok_barang/filter")}}',
@@ -111,7 +111,7 @@
             $("#clear").css("display", "none");
             $.ajax({
                 type : 'get',
-                url : '{{url("/stok_barang/cari")}}',
+                url : '{{url("/stok_barang/cari_list")}}',
                 data:{'search':null},
                 success:function(data){
                     $('tbody').html(data);

@@ -36,7 +36,25 @@ class ProductController extends Controller
     }
     public function productSearch(Request $request)
     {
-        $products=Product::where('product_name','LIKE','%'.$request->search."%")->get();
+        if ($request->search == null) {
+            $products = Product::orderBy('product_name')->get();
+        } else {
+            $products=Product::where('product_name','LIKE','%'.$request->search."%")->get();
+        }
+
+
+        return view('admin.product.list_product',compact(['products']));
+
+    }
+    public function productSearchList(Request $request)
+    {
+        if ($request->search == null) {
+            $products = Product::orderBy('product_name')->get();
+        } else {
+            $products=Product::where('product_name','LIKE','%'.$request->search."%")->get();
+        }
+
+
         return view('admin.product.list_product',compact(['products']));
 
     }
