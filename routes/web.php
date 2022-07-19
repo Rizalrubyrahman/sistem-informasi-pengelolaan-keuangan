@@ -43,4 +43,5 @@ Route::prefix('transaksi')->group(function () {
     Route::post('ubah/{productId}', 'TransactionController@productUpdate');
     Route::post('hapus/{productId}', 'TransactionController@productDelete');
     Route::post('export_excel', 'TransactionController@exportExcel');
+    Route::get('export_pdf', 'TransactionController@ExportPDF');
 });

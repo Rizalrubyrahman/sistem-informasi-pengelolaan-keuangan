@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SaleTransactionExport;
 use App\Product;
 use App\SaleTransaction;
-use Alert,Validator;
+use Alert,Validator,PDF;
 use Carbon\Carbon;
 
 class TransactionController extends Controller
@@ -98,5 +98,18 @@ class TransactionController extends Controller
     {
         $tanggal = Carbon::now()->format('d-m-Y');
         return Excel::download(new SaleTransactionExport($request->fromDate,$request->toDate), 'Laporan Laba Rugi.'.$tanggal.'.xlsx');
+    }
+    public function ExportPDF(Request $request)
+    {
+        $tanggal = Carbon::now()->format('d-m-Y');
+        $saleTransactions = SaleTransaction::orderBy('date')->whereBetween('date',[$request->fromDate,$request->toDate])->get();
+        $fromDate = $request->fromDate;
+        $toDate = $request->toDate;
+        $pdf = PDF::loadView('admin.transaction.sale.export_pdf_transaction',compact(['saleTransactions','fromDate','toDate']));
+        $fileName =  'Laporan Laba Rugi.'.$tanggal.'.pdf' ;
+        $pdf->save($fileName);
+
+        $pdf = public_path($fileName);
+        return response()->download($pdf);
     }
 }

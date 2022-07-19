@@ -286,8 +286,8 @@
             </tbody>
         </table>
         <div class="form-group mt-4">
-            <a href="" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Unduh PDF</a>
-            <button type="submit" class="btn btn-success" id="btnExport"><i class="fas fa-file-excel"></i> Unduh Excel</button>
+            <button type="button" class="btn btn-danger" id="btnExportPDF"><i class="fas fa-file-pdf"></i> Unduh PDF</button>
+            <button type="submit" class="btn btn-success" id="btnExportExcel"><i class="fas fa-file-excel"></i> Unduh Excel</button>
 
         </div>
         <input type="hidden" name="date" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" id="dateNow">
@@ -396,7 +396,7 @@
         $('#fromDate,#toDate').on('change',function(){
             loadDataFromDate();
         })
-        $('#btnExport').on('click',function(){
+        $('#btnExportExcel').on('click',function(){
             $toDate=$('#toDate').val();
             $fromDate=$('#fromDate').val();
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -414,6 +414,32 @@
                         link.href = window.URL.createObjectURL(data);
                         link.download = `Laporan Laporan Laba Rugi.`+date+`.xlsx`;
                         link.click();
+                    },
+                    fail: function(data) {
+                        alert('Not downloaded');
+                        //console.log('fail',  data);
+                    }
+
+            });
+        })
+        $('#btnExportPDF').on('click',function(){
+            $toDate=$('#toDate').val();
+            $fromDate=$('#fromDate').val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                    type : 'get',
+                    url : '{{url("/transaksi/export_pdf")}}',
+                    data:{'fromDate':$fromDate,'toDate':$toDate},
+                    xhrFields:{
+                        responseType: 'blob'
+                    },
+                                success: function(response){
+                //     { var blob = new Blob([response]);
+                // var link = document.createElement('a');
+                // link.href = window.URL.createObjectURL(blob);
+                // // link.download = "Sample.pdf";
+                // link.click();
+
                     },
                     fail: function(data) {
                         alert('Not downloaded');
