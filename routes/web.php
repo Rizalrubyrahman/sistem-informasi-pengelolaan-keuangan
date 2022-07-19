@@ -39,6 +39,7 @@ Route::prefix('transaksi')->group(function () {
     Route::get('filter','TransactionController@transactionFilter');
     Route::get('sort_by','TransactionController@transactionSortBy');
     Route::get('sort_by_date','TransactionController@transactionSortByDate');
+    Route::get('sort_by_date_sum','TransactionController@transactionSortByDateSum');
     Route::get('ubah/{productId}', 'TransactionController@productEdit');
     Route::post('ubah/{productId}', 'TransactionController@productUpdate');
     Route::post('hapus/{productId}', 'TransactionController@productDelete');

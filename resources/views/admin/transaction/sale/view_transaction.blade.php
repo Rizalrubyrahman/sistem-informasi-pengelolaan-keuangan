@@ -86,7 +86,7 @@
                             @if ($sumSale == 0 || $sumSale == null)
                                 -
                             @else
-                                <span style="color:#2ab284">Rp {{ number_format($sumSale, 0, ",", ".") }}</span>
+                                <span id="spanPenjualan" style="color:#2ab284">Rp {{ number_format($sumSale, 0, ",", ".") }}</span>
                             @endif
                             <br>
                             <span style="font-size: 9pt">Penjualan</span>
@@ -95,7 +95,7 @@
                             @if ($sumExpense == 0 || $sumExpense == null)
                                 -
                             @else
-                                <span style="color:#dc4e4d">Rp {{ number_format($sumExpense, 0, ",", ".") }}</span>
+                                 <span style="color:#dc4e4d" id="spanPengeluaran"> Rp {{ number_format($sumExpense, 0, ",", ".") }}</span>
                             @endif
                             <br>
                             <span style="font-size: 9pt">Pengeluaran</span>
@@ -104,18 +104,18 @@
                     <tr>
                         <td>
                             @if (($sumSale - $sumExpense) > 0)
-                                <span style="color:#2ab284">Keuntungan</span>
+                                <span id="textKeuntungan" style="color:#2ab284">Keuntungan</span>
                             @elseif (($sumSale - $sumExpense) < 0)
-                                <span style="color:#dc4e4d">Keuntungan</span>
+                                <span id="textKeuntungan" style="color:#dc4e4d">Keuntungan</span>
                             @else
                                 Keuntungan
                             @endif
                         </td>
                         <td align="right">
                             @if (($sumSale - $sumExpense) > 0)
-                                <span style="color:#2ab284">Rp {{ number_format(($sumSale - $sumExpense), 0, ",", ".") }}</span>
+                                <span style="color:#2ab284" id="spanKeuntungan">Rp {{ number_format(($sumSale - $sumExpense), 0, ",", ".") }}</span>
                             @elseif (($sumSale - $sumExpense) < 0)
-                                <span style="color:#dc4e4d">Rp {{ number_format(($sumSale - $sumExpense), 0, ",", ".") }}</span>
+                                <span style="color:#dc4e4d" id="spanKeuntungan">Rp {{ number_format(($sumSale - $sumExpense), 0, ",", ".") }}</span>
                             @else
                                 -
                             @endif
@@ -395,6 +395,66 @@
 
         $('#fromDate,#toDate').on('change',function(){
             loadDataFromDate();
+        })
+        $('#fromDate,#toDate').on('change',function(){
+            $toDate=$('#toDate').val();
+            $fromDate=$('#fromDate').val();
+            $.ajax({
+                    type : 'get',
+                    url : '{{url("/transaksi/sort_by_date_sum")}}',
+                    data:{'fromDate':$fromDate,'toDate':$toDate},
+                    success:function(data){
+                        let saleAmount = 0;
+                        let expenseAmount = 0;
+
+                        for (let i = 0; i < data.data.length; i++) {
+                            saleAmount += (data.data[i]['sale_amount'] == null) ? 0 : parseInt(data.data[i]['sale_amount']);
+                            expenseAmount += (data.data[i]['expense_amount'] == null) ? 0 : parseInt(data.data[i]['expense_amount']);
+
+                        }
+                        let number_string_saleAmount = saleAmount.toString(),
+                            sisa_saleAmount = number_string_saleAmount.length % 3,
+                            rupiah_saleAmount = number_string_saleAmount.substr(0, sisa_saleAmount),
+                            ribuan_saleAmount = number_string_saleAmount.substr(sisa_saleAmount).match(/\d{3}/g);
+
+                        if(ribuan_saleAmount){
+                            separator_saleAmount = sisa_saleAmount ? '.' : '';
+                            rupiah_saleAmount += separator_saleAmount + ribuan_saleAmount.join('.');
+                        }
+
+                        let number_string_expenseAmount = expenseAmount.toString(),
+                            sisa_expenseAmount = number_string_expenseAmount.length % 3,
+                            rupiah_expenseAmount = number_string_expenseAmount.substr(0, sisa_expenseAmount),
+                            ribuan_expenseAmount = number_string_expenseAmount.substr(sisa_expenseAmount).match(/\d{3}/g);
+
+                        if(ribuan_expenseAmount){
+                            separator_expenseAmount = sisa_expenseAmount ? '.' : '';
+                            rupiah_expenseAmount += separator_expenseAmount + ribuan_expenseAmount.join('.');
+                        }
+                        let profitAmount = saleAmount - expenseAmount;
+                        let number_string_profitAmount = profitAmount.toString(),
+                            sisa_profitAmount = number_string_profitAmount.length % 3,
+                            rupiah_profitAmount = number_string_profitAmount.substr(0, sisa_profitAmount),
+                            ribuan_profitAmount = number_string_profitAmount.substr(sisa_profitAmount).match(/\d{1,3}/g);
+
+                        if(ribuan_profitAmount){
+                            separator_profitAmount = sisa_profitAmount ? '.' : '';
+                            rupiah_profitAmount += ribuan_profitAmount.join('.');
+                        }
+                        if(profitAmount > 0){
+                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount).css("color","#2ab284");
+                            $('#textKeuntungan').css("color","#2ab284");
+                        }else if(profitAmount < 0){
+                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount).css("color","#dc4e4d");
+                            $('#textKeuntungan').css("color","#dc4e4d");
+                        }else{
+                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount);
+                        }
+                       $('#spanPenjualan').text('Rp '+rupiah_saleAmount);
+                       $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount);
+
+                    }
+            });
         })
         $('#btnExportExcel').on('click',function(){
             $toDate=$('#toDate').val();

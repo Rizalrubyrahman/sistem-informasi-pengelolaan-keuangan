@@ -94,6 +94,21 @@ class TransactionController extends Controller
         return view('admin.transaction.sale.list_transaction',compact(['saleTransactions']));
 
     }
+    public function transactionSortByDateSum(Request $request)
+    {
+        $fromDate = Carbon::parse($request->fromDate)->format('Y-m-d');
+        $toDate = Carbon::parse($request->toDate)->format('Y-m-d');
+        if($request->fromDate != null || $request->toDate != null){
+            $saleTransactions = SaleTransaction::orderBy('date')->whereBetween('date',[$fromDate,$toDate])->get();
+        }else {
+            $saleTransactions = SaleTransaction::orderBy('date')->get();
+        }
+        return response()->json([
+            'status' => true,
+            'data'   => $saleTransactions,
+        ]);
+
+    }
     public function exportExcel(Request $request)
     {
         $tanggal = Carbon::now()->format('d-m-Y');
