@@ -152,13 +152,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Dari Tanggal</label>
-                            <input type="date" name="fromDate" id="fromDate" class="datepicker form-control">
+                            <input type="date" name="fromDate" id="fromDate" value="{{ $startDate }}" class="datepicker form-control">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Sampai Tanggal</label>
-                            <input type="date" name="toDate" id="toDate" class="datepicker form-control">
+                            <input type="date" name="toDate" value="{{ $endDate }}" id="toDate" class="datepicker form-control">
                         </div>
                     </div>
                 </div>
@@ -286,10 +286,11 @@
             </tbody>
         </table>
         <div class="form-group mt-4">
-            <a href="" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Download PDF</a>
-            <a href="" class="btn btn-success"><i class="fas fa-file-excel"></i> Download Excel</a>
+            <a href="" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Unduh PDF</a>
+            <button type="submit" class="btn btn-success" id="btnExport"><i class="fas fa-file-excel"></i> Unduh Excel</button>
 
         </div>
+        <input type="hidden" name="date" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" id="dateNow">
         {{-- <nav class="d-flex justify-content-center" aria-label="Page navigation example">
         {{ $products->links() }}
         </nav> --}}
@@ -379,7 +380,7 @@
             });
 
         })
-        $('#fromDate,#toDate').on('change',function(){
+        function loadDataFromDate(){
             $toDate=$('#toDate').val();
             $fromDate=$('#fromDate').val();
             $.ajax({
@@ -390,7 +391,36 @@
                         $('#list').html(data);
                     }
             });
+        }
 
+        $('#fromDate,#toDate').on('change',function(){
+            loadDataFromDate();
+        })
+        $('#btnExport').on('click',function(){
+            $toDate=$('#toDate').val();
+            $fromDate=$('#fromDate').val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                    method : 'post',
+                    url : '{{url("/transaksi/export_excel")}}',
+                    data:{_token: CSRF_TOKEN,'fromDate':$fromDate,'toDate':$toDate},
+                    xhrFields:{
+                        responseType: 'blob'
+                    },
+                                success: function(data)
+                    {
+                        var link = document.createElement('a');
+                        var date = $('#dateNow').val();
+                        link.href = window.URL.createObjectURL(data);
+                        link.download = `Laporan Laporan Laba Rugi.`+date+`.xlsx`;
+                        link.click();
+                    },
+                    fail: function(data) {
+                        alert('Not downloaded');
+                        //console.log('fail',  data);
+                    }
+
+            });
         })
         $('#btnClear').on('click',function(){
                 $value = $('#transactionSearch').val('');

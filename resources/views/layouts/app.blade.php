@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="_token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
     <link href="{{ asset('admin/css/app.css') }}" rel="stylesheet">

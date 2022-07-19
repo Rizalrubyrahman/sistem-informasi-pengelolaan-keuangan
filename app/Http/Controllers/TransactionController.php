@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SaleTransactionExport;
 use App\Product;
 use App\SaleTransaction;
 use Alert,Validator;
@@ -22,8 +24,10 @@ class TransactionController extends Controller
      */
     public function transactionView()
     {
-        $saleTransactions = SaleTransaction::orderBy('date')->get();
-        return view('admin.transaction.sale.view_transaction',compact(['saleTransactions']));
+        $startDate = Carbon::now()->firstOfMonth()->format('Y-m-d');
+        $endDate = Carbon::now()->lastOfMonth()->format('Y-m-d');
+        $saleTransactions = SaleTransaction::orderBy('date')->whereBetween('date',[$startDate,$endDate])->get();
+        return view('admin.transaction.sale.view_transaction',compact(['saleTransactions','startDate','endDate']));
     }
     public function transactionSearch(Request $request)
     {
@@ -89,5 +93,10 @@ class TransactionController extends Controller
         }
         return view('admin.transaction.sale.list_transaction',compact(['saleTransactions']));
 
+    }
+    public function exportExcel(Request $request)
+    {
+        $tanggal = Carbon::now()->format('d-m-Y');
+        return Excel::download(new SaleTransactionExport($request->fromDate,$request->toDate), 'Laporan Laba Rugi.'.$tanggal.'.xlsx');
     }
 }
