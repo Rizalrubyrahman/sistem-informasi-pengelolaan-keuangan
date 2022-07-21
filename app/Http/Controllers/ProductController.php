@@ -133,7 +133,7 @@ class ProductController extends Controller
         $deleteProduct = Product::find($productId);
         $deleteProduct->delete();
 
-        Alert::success('Berhasil', 'Produk berhasil diubah.');
+        Alert::success('Berhasil', 'Produk berhasil dihapus.');
         return redirect('stok_barang');
     }
 }

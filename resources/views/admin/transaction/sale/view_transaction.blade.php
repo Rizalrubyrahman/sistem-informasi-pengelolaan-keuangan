@@ -84,7 +84,7 @@
                     <tr>
                         <td align="center" style="border: 2px solid #dee2e6;">
                             @if ($sumSale == 0 || $sumSale == null)
-                                -
+                                <span id="spanPenjualan">-</span>
                             @else
                                 <span id="spanPenjualan" style="color:#2ab284">Rp {{ number_format($sumSale, 0, ",", ".") }}</span>
                             @endif
@@ -93,7 +93,7 @@
                         </td>
                         <td align="center" style="border: 2px solid #dee2e6;">
                             @if ($sumExpense == 0 || $sumExpense == null)
-                                -
+                                <span id="spanPengeluaran">-</span>
                             @else
                                  <span style="color:#dc4e4d" id="spanPengeluaran"> Rp {{ number_format($sumExpense, 0, ",", ".") }}</span>
                             @endif
@@ -450,8 +450,17 @@
                         }else{
                             $('#spanKeuntungan').text('Rp '+rupiah_profitAmount);
                         }
-                       $('#spanPenjualan').text('Rp '+rupiah_saleAmount);
-                       $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount);
+                        if(expenseAmount > 0){
+                            $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount).css("color","#dc4e4d");
+                        }else{
+                            $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount);
+                        }
+                        if(saleAmount > 0){
+                            $('#spanPenjualan').text('Rp '+rupiah_saleAmount).css("color","#2ab284");
+                        }else{
+                            $('#spanPenjualan').text('Rp '+rupiah_saleAmount);
+                        }
+
 
                     }
             });
