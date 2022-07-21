@@ -82,6 +82,14 @@ class TransactionController extends Controller
         return view('admin.transaction.sale.list_transaction',compact(['saleTransactions']));
 
     }
+    public function transactionDetail($transactionId)
+    {
+
+        $saleTransaction = SaleTransaction::where('sale_transaction_id',$transactionId)->first();
+
+        return view('admin.transaction.sale.detail_transaction',compact(['saleTransaction']));
+
+    }
     public function transactionSortByDate(Request $request)
     {
         $fromDate = Carbon::parse($request->fromDate)->format('Y-m-d');
@@ -126,5 +134,13 @@ class TransactionController extends Controller
 
         $pdf = public_path($fileName);
         return response()->download($pdf);
+    }
+    public function transactionDelete($transactionId)
+    {
+        $deleteTransaction = SaleTransaction::find($transactionId);
+        $deleteTransaction->delete();
+
+        Alert::success('Berhasil', 'Transaksi berhasil dihapus.');
+        return redirect('transaksi');
     }
 }

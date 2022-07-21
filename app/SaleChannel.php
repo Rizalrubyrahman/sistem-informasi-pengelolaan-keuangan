@@ -11,4 +11,10 @@ class SaleChannel extends Model
         'sale_channel',
         'icon'
     ];
+
+    public function saleTransaction()
+    {
+        return $this->hasOne('App\SaleTransaction', 'sale_channel_id','sale_channel_id');
+
+    }
 }

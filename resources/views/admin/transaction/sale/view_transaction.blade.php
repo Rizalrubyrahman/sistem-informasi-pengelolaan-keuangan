@@ -460,8 +460,6 @@
                         }else{
                             $('#spanPenjualan').text('Rp '+rupiah_saleAmount);
                         }
-
-
                     }
             });
         })
