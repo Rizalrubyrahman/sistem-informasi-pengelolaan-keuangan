@@ -18,7 +18,7 @@ class CreateSaleTransactionsTable extends Migration
             $table->foreignId('payment_method_id')->nullable();
             $table->foreignId('sale_channel_id')->nullable();
             $table->date('date');
-            $table->string('sale_amount');
+            $table->string('sale_amount')->nullable();
             $table->string('expense_amount')->nullable();
             $table->string('note')->nullable();
             $table->string('status')->nullable();

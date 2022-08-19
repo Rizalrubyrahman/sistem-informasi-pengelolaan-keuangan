@@ -55,7 +55,7 @@
         <h1 class="h3 mb-3"><strong>Ubah Transaksi</strong> </h1>
         <div class="row">
             <div class="col-md-6 mt-4">
-                <form action="{{ url('/transaksi/ubah/'.$saleTransaction->sale_transaction_id) }}" method="POST">
+                <form action="{{ url('/transaksi/ubah/'.$saleTransaction->sale_transaction_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mt-2">
                         <label for="sale_amount">Nominal Penjualan</label>
@@ -126,6 +126,7 @@
                                     <th class="text-center">Nama Produk</th>
                                     <th class="text-center"><span style="margin-left: 10px">Qty</span></th>
                                     <th class="text-center"><span style="margin-left: 50px">Harga</span></th>
+                                    <th></th>
                                 </tr>
                                 <tbody style="border:none">
                                     @php
@@ -307,8 +308,25 @@
                         <div class="form-group d-flex justify-content-center">
                             <button id="btnAddRow" style="margin-left:165px" class="btn btn-success" type="button">Tambah Produk</button>
                         </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <label>Bukti Pembayaran</label>
+                                <input type="file" " name="bukti_pembayaran" id="bukti_pembayaran" style="width:300px" class="form-control @error('bukti_pembayaran') is-invalid @enderror">
+                                <span style="color:#dc3545; font-size:8pt"><required>*</required>Format yang diijinkan (JPG, PNG, JPEG)</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <img src="{{ asset('admin/images/bukti_pembayaran/'.$saleTransaction->file) }}" alt="" style="width:400px">
+                            </div>
+                            <div class="col-md-"></div>
+                        </div>
+
                     </div>
-                    <div class="form-group mt-2">
+
+                    <br>
+                    <div class="form-group mt-4">
                         <button type="submit" class="btn btn-warning">Ubah</button>
                         <a href="{{ url('transaksi/detail/'.$saleTransaction->sale_transaction_id) }}" style="border-color: #1cbb8c" class="btn">Kembali</a>
                     </div>
@@ -447,7 +465,6 @@
             return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
         }
         let countProducts = {{ count($saleProducts) }}
-        console.log(countProducts);
         if(countProducts == 0){
             ValidateQty(1);
             minus(1);

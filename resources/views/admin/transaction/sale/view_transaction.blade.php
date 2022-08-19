@@ -143,7 +143,7 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-12">
-                <a href="{{ url('/stok_barang/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Transaksi</a>
+                <a href="{{ url('/transaksi/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Transaksi</a>
             </div>
         </div>
         <div class="row">

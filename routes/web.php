@@ -32,8 +32,8 @@ Route::prefix('stok_barang')->group(function () {
 });
 Route::prefix('transaksi')->group(function () {
     Route::get('/','TransactionController@transactionView');
-    Route::get('tambah','TransactionController@productInput');
-    Route::post('tambah','TransactionController@productStore');
+    Route::get('tambah','TransactionController@transactionInput');
+    Route::post('tambah','TransactionController@transactionStore');
     Route::get('cari','TransactionController@transactionSearch');
     Route::get('cari_list','TransactionController@transactionSearchList');
     Route::get('filter','TransactionController@transactionFilter');

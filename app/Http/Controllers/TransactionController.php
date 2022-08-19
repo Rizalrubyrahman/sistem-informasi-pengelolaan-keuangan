@@ -105,6 +105,14 @@ class TransactionController extends Controller
         return view('admin.transaction.sale.edit_transaction',compact(['saleTransaction','saleChannels','paymentMethods','products','saleProducts']));
 
     }
+    public function transactionInput()
+    {
+        $saleChannels = SaleChannel::all();
+        $paymentMethods = PaymentMethod::all();
+        $products = Product::all();
+        return view('admin.transaction.sale.input_transaction',compact(['saleChannels','paymentMethods','products']));
+
+    }
     public function transactionSortByDate(Request $request)
     {
         $fromDate = Carbon::parse($request->fromDate)->format('Y-m-d');
@@ -121,14 +129,26 @@ class TransactionController extends Controller
     {
         $saleAmount = filter_var($request->sale_amount, FILTER_SANITIZE_NUMBER_INT);
         $expenseAmount = filter_var($request->expense_amount, FILTER_SANITIZE_NUMBER_INT);
+        $imageBukti  = $request->file('bukti_pembayaran');
         $messages = [
             'date.required' => 'Tanggal harus diisi.',
         ];
         $validate = Validator::make($request->all(),[
             'date' => 'required',
+            'bukti_pembayaran' => 'mimes:jpg,png,jpeg'
         ],$messages);
         if($validate->passes())
         {
+            $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
+            $prefix_name = 'bukti_pembayaran_';
+            $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/images/bukti_pembayaran';
+                $imageBukti->move($destinationPath, $prefix_name.$images_name);
+            if ($request->hasFile('bukti_pembayaran')) {
+                $buktiPembayaran = $prefix_name.$images_name;
+            }else{
+                $buktiPembayaran = null;
+            }
+
             $updateSaleTransaction = SaleTransaction::find($transactionId);
             $updateSaleTransaction->payment_method_id = $request->payment_method;
             $updateSaleTransaction->sale_channel_id = $request->sale_channel;
@@ -136,6 +156,7 @@ class TransactionController extends Controller
             $updateSaleTransaction->sale_amount =  $saleAmount;
             $updateSaleTransaction->expense_amount = $expenseAmount;
             $updateSaleTransaction->note = $request->note;
+            $updateSaleTransaction->file = $buktiPembayaran;
             $updateSaleTransaction->updated_at = Carbon::now();
             $updateSaleTransaction->save();
 
@@ -179,6 +200,56 @@ class TransactionController extends Controller
         Alert::error('Gagal', 'Transaksi gagal diubah.');
         return redirect()->back()->withErrors($validate)->withInput();
 
+    }
+
+    public function transactionStore(Request $request){
+        $saleAmount = filter_var($request->sale_amount, FILTER_SANITIZE_NUMBER_INT);
+        $expenseAmount = filter_var($request->expense_amount, FILTER_SANITIZE_NUMBER_INT);
+        $imageBukti  = $request->file('bukti_pembayaran');
+        $messages = [
+            'date.required' => 'Tanggal harus diisi.',
+        ];
+        $validate = Validator::make($request->all(),[
+            'date' => 'required',
+            'bukti_pembayaran' => 'mimes:jpg,png,jpeg'
+        ],$messages);
+        if($validate->passes())
+        {
+            $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
+            $prefix_name = 'bukti_pembayaran_';
+            $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/images/bukti_pembayaran';
+                $imageBukti->move($destinationPath, $prefix_name.$images_name);
+            if ($request->hasFile('bukti_pembayaran')) {
+                $buktiPembayaran = $prefix_name.$images_name;
+            }else{
+                $buktiPembayaran = null;
+            }
+
+                $newSaleTransaction = new SaleTransaction;
+                $newSaleTransaction->payment_method_id = $request->payment_method;
+                $newSaleTransaction->sale_channel_id = $request->sale_channel;
+                $newSaleTransaction->date = $request->date;
+                $newSaleTransaction->sale_amount =  $saleAmount;
+                $newSaleTransaction->expense_amount = $expenseAmount;
+                $newSaleTransaction->file = $buktiPembayaran;
+                $newSaleTransaction->note = $request->note;
+                $newSaleTransaction->save();
+
+            foreach($request->produk_id as $keyProduct => $productId){
+                if($productId != null){
+                    $newTransactionProduct = new SaleTransactionProduct;
+                    $newTransactionProduct->product_id = $productId;
+                    $newTransactionProduct->qty = $request->qty[$keyProduct];
+                    $newTransactionProduct->sale_transaction_id = $newSaleTransaction->sale_transaction_id;
+                    $newTransactionProduct->save();
+                }
+            }
+
+            Alert::success('Berhasil', 'Transaksi berhasil disimpan.');
+            return redirect('transaksi');
+        }
+        Alert::error('Gagal', 'Transaksi gagal disimpan.');
+        return redirect()->back()->withErrors($validate)->withInput();
     }
 
     public function transactionSortByDateSum(Request $request)

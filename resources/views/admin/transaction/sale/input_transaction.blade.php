@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Ubah Transaksi')
+@section('title','Tambah Transaksi')
 @section('content')
 <style>
     .modal {
@@ -52,14 +52,14 @@
 </style>
 <div class="card shadow">
     <div class="card-body">
-        <h1 class="h3 mb-3"><strong>Ubah Transaksi</strong> </h1>
+        <h1 class="h3 mb-3"><strong>Tambah Transaksi</strong> </h1>
         <div class="row">
             <div class="col-md-6 mt-4">
-                <form action="{{ url('/transaksi/ubah/'.$saleTransaction->sale_transaction_id) }}" method="POST">
+                <form action="{{ url('/transaksi/tambah/') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mt-2">
                         <label for="sale_amount">Nominal Penjualan</label>
-                        <input type="text" name="sale_amount" id="sale_amount" value="{{ old('sale_amount',$saleTransaction->sale_amount) }}" class="form-control @error('sale_amount') is-invalid @enderror">
+                        <input type="text" name="sale_amount" id="sale_amount"  class="form-control @error('sale_amount') is-invalid @enderror">
                         @error('sale_amount')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="form-group mt-2">
                         <label for="expense_amount">Nominal Pengeluaran</label>
-                        <input type="text" name="expense_amount" id="expense_amount" value="{{ old('expense_amount',$saleTransaction->expense_amount) }}" class="form-control @error('expense_amount') is-invalid @enderror">
+                        <input type="text" name="expense_amount" id="expense_amount"  class="form-control @error('expense_amount') is-invalid @enderror">
                         @error('expense_amount')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -79,7 +79,7 @@
                         <div class="col-md-6">
                             <div class="form-group mt-2">
                                 <label for="date">Tanggal Transaksi</label>
-                                <input type="date"  name="date" id="date" value="{{ old('date',$saleTransaction->date) }}" class="form-control @error('date') is-invalid @enderror"/>
+                                <input type="date"  name="date" id="date" value="{{ old('date') }}" class="form-control @error('date') is-invalid @enderror"/>
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -90,7 +90,7 @@
                         <div class="col-md-6">
                             <div class="form-group mt-2">
                                 <label for="note">Catatan/Keterangan</label>
-                                <input type="text"  name="note" id="note" value="{{ old('note',$saleTransaction->note) }}" class="form-control @error('note') is-invalid @enderror"/>
+                                <input type="text"  name="note" id="note" value="{{ old('note') }}" class="form-control @error('note') is-invalid @enderror"/>
                                 @error('note')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -103,18 +103,18 @@
                     <div class="form-group mt-2">
                         <label for="payment_method">Metode Pembayaran</label>
                         <select name="payment_method" id="payment_method" class="form-control ">
+                            <option value="" selected disabled>Pilih Metode Pembayaran</option>
                             @foreach ($paymentMethods as $paymentMethod)
-
-                                <option value="{{ $paymentMethod->payment_method_id }}" {{ ($paymentMethod->payment_method_id == $saleTransaction->payment_method_id) ? 'selected' : '' }}> {{ $paymentMethod->payment_method }}</option>
+                                <option value="{{ $paymentMethod->payment_method_id }}"> {{ $paymentMethod->payment_method }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group mt-2">
                         <label for="sale_channel">Channel Penjualan</label>
                         <select name="sale_channel" id="sale_channel" class="form-control ">
+                            <option value="" selected disabled>Pilih Channel</option>
                             @foreach ($saleChannels as $saleChannel)
-
-                                <option value="{{ $saleChannel->sale_channel_id }}" {{ ($saleChannel->sale_channel_id == $saleTransaction->sale_channel_id) ? 'selected' : '' }}> {{ $saleChannel->sale_channel }}</option>
+                                <option value="{{ $saleChannel->sale_channel_id }}"> {{ $saleChannel->sale_channel }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -126,9 +126,11 @@
                                     <th class="text-center">Nama Produk</th>
                                     <th class="text-center"><span style="margin-left: 10px">Qty</span></th>
                                     <th class="text-center"><span style="margin-left: 50px">Harga</span></th>
+                                    <th></th>
                                 </tr>
                                 <tbody style="border:none">
-                                    <tr id="trProduct">
+
+                                    <tr class="trProduct">
                                         <td>
                                             <div class="row">
                                                 <div class="col-md-2">
@@ -138,7 +140,7 @@
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h3><strong>Hapus Transaksi</strong></h3>
+                                                                    <h3><strong>Data Produk</strong></h3>
                                                                     <button id="iconCloseModal1" type="button" class="btn-close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
@@ -179,8 +181,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <input type="text" name="produk_id[]" id="produk_id1">
-                                                    <input  style="width: 100%; border:1px solid #ced4da" class="form-control" type="text" name="name_product[]" id="name_product1" readonly>
+                                                    <input type="hidden" value="" name="produk_id[]" id="produk_id1">
+                                                    <input type="hidden" value="" name="sale_produk_id[]" id="sale_produk_id1">
+                                                    <input  style="width: 100%; border:1px solid #ced4da" class="form-control" type="text" value="" name="name_product[]" id="name_product1" readonly>
                                                 </div>
                                                 <div class="col-md-2"></div>
                                             </div>
@@ -202,22 +205,32 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input style="margin-left: 50px; width:250px;" class="form-control" type="text" name="produk_price" readonly id="price1" >
+                                            <input style="margin-left: 50px; width:250px;" class="form-control" type="text" name="produk_price" value="" readonly id="price1" >
                                         </td>
                                         <td>
                                             <button class="btn btn-danger btn-sm" type="button" id="btnClose1"><i class="fas fa-close"></i></button>
                                         </td>
                                     </tr>
+
                                 </tbody>
                             </table>
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <button id="btnAddRow" style="margin-left:165px" class="btn btn-success" type="button">Tambah Produk</button>
                         </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <label>Bukti Pembayaran</label>
+                                <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" style="width:300px" class="form-control @error('bukti_pembayaran') is-invalid @enderror">
+                                <span style="color:#dc3545; font-size:8pt"><required>*</required>Format yang diijinkan (JPG, PNG, JPEG)</span>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="form-group mt-2">
-                        <button type="submit" class="btn btn-warning">Ubah</button>
-                        <a href="{{ url('stok_barang') }}" style="border-color: #1cbb8c" class="btn">Kembali</a>
+                    <br><br>
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <a href="{{ url('transaksi') }}" style="border-color: #1cbb8c" class="btn">Kembali</a>
                     </div>
                 </form>
             </div>
@@ -242,9 +255,12 @@
                 $(this).attr('id', newId);
 
             });
+
             cloned.find("input[type='text']").val('');
+            cloned.find("input[type='hidden']").val('');
             cloned.find(".qty:input[type='text']").val('0');
             cloned.insertAfter(lastRow);
+
             minus(index);
             plus(index);
             close(index);
@@ -266,7 +282,8 @@
 
         function close(index){
             $("#tableProduct").on("click", "#btnClose"+index, function(event) {
-                if(index > 1){
+                var row = $('#tableProduct>tbody>tr').length;
+                if(row > 2){
                     $(this).closest("tr").remove();
                     index -= 1
                 }
@@ -344,12 +361,24 @@
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
         }
-        ValidateQty(1);
-        minus(1);
-        plus(1);
-        close(1);
-        modal(1);
 
+            ValidateQty(1);
+            minus(1);
+            plus(1);
+            close(1);
+            modal(1);
+
+
+        var saleAmount = document.getElementById('sale_amount');
+        saleAmount.addEventListener('keyup', function(e)
+        {
+            saleAmount.value = formatRupiah(this.value, 'Rp ');
+        });
+        var expenseAmount = document.getElementById('expense_amount');
+        expenseAmount.addEventListener('keyup', function(e)
+        {
+            expenseAmount.value = formatRupiah(this.value, 'Rp ');
+        });
     </script>
 @endsection
 
