@@ -12,4 +12,9 @@ class PaymentMethod extends Model
         'payment_method',
         'icon'
     ];
+    public function saleTransaction()
+    {
+        return $this->hasOne('App\SaleTransaction', 'payment_method_id','payment_method_id');
+
+    }
 }

@@ -20,6 +20,7 @@
     <link href="{{ asset('admin/css/brands.min.css') }}" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     @yield('style')
     <title>@yield('title')</title>
 </head>
@@ -30,8 +31,10 @@
         @include('layouts.sidebar')
         <div class="main">
             @include('layouts.navbar')
+            <div style="background-color: #FFECC7;height:300px;width:100%" ></div>
             <main class="content" style="background-color: #f5f5f5">
-                <div class="container-fluid p-0">
+
+                <div class="container-fluid p-0" style="z-index: 1; margin-top:-300px;">
                     @yield('content')
                 </div>
             </main>

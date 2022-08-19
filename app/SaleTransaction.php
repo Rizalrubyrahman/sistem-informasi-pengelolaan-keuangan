@@ -12,5 +12,9 @@ class SaleTransaction extends Model
     {
         return $this->belongsTo('App\SaleChannel', 'sale_channel_id','sale_channel_id');
     }
+    public function paymentMethod()
+    {
+        return $this->belongsTo('App\PaymentMethod', 'payment_method_id','payment_method_id');
+    }
 
 }

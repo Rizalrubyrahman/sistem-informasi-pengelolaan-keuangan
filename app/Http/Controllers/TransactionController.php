@@ -7,6 +7,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SaleTransactionExport;
 use App\Product;
 use App\SaleTransaction;
+use App\SaleTransactionProduct;
+use App\SaleChannel;
+use App\PaymentMethod;
 use Alert,Validator,PDF;
 use Carbon\Carbon;
 
@@ -90,6 +93,18 @@ class TransactionController extends Controller
         return view('admin.transaction.sale.detail_transaction',compact(['saleTransaction']));
 
     }
+    public function transactionEdit($transactionId)
+    {
+
+        $saleTransaction = SaleTransaction::where('sale_transaction_id',$transactionId)->first();
+        $saleProducts = SaleTransactionProduct::where('sale_transaction_id',$transactionId)->get();
+        $saleChannels = SaleChannel::all();
+        $paymentMethods = PaymentMethod::all();
+        $products = Product::all();
+
+        return view('admin.transaction.sale.edit_transaction',compact(['saleTransaction','saleChannels','paymentMethods','products','saleProducts']));
+
+    }
     public function transactionSortByDate(Request $request)
     {
         $fromDate = Carbon::parse($request->fromDate)->format('Y-m-d');
@@ -102,6 +117,70 @@ class TransactionController extends Controller
         return view('admin.transaction.sale.list_transaction',compact(['saleTransactions']));
 
     }
+    public function transactionUpdate($transactionId,Request $request)
+    {
+        $saleAmount = filter_var($request->sale_amount, FILTER_SANITIZE_NUMBER_INT);
+        $expenseAmount = filter_var($request->expense_amount, FILTER_SANITIZE_NUMBER_INT);
+        $messages = [
+            'date.required' => 'Tanggal harus diisi.',
+        ];
+        $validate = Validator::make($request->all(),[
+            'date' => 'required',
+        ],$messages);
+        if($validate->passes())
+        {
+            $updateSaleTransaction = SaleTransaction::find($transactionId);
+            $updateSaleTransaction->payment_method_id = $request->payment_method;
+            $updateSaleTransaction->sale_channel_id = $request->sale_channel;
+            $updateSaleTransaction->date = $request->date;
+            $updateSaleTransaction->sale_amount =  $saleAmount;
+            $updateSaleTransaction->expense_amount = $expenseAmount;
+            $updateSaleTransaction->note = $request->note;
+            $updateSaleTransaction->updated_at = Carbon::now();
+            $updateSaleTransaction->save();
+
+            $saleProducts = SaleTransactionProduct::where('sale_transaction_id',$transactionId)->get();
+
+            foreach($request->sale_produk_id as $keySaleTransaction => $saleTransactionId){
+                // dd(SaleTransactionProduct::where('sale_transaction_id',$transactionId)->where('sale_transaction_product_id','!=',$saleTransactionId)->get());
+                if($saleTransactionId != null){
+                    foreach($saleProducts as $saleProduct){
+                        if($saleProduct->sale_transaction_product_id == $saleTransactionId){
+                            $updateTransactionProduct = SaleTransactionProduct::find($saleTransactionId);
+                            $updateTransactionProduct->product_id = $request->produk_id[$saleTransactionId];
+                            $updateTransactionProduct->qty = $request->qty[$saleTransactionId];
+                            $updateTransactionProduct->save();
+                        }else{
+                            $getProducts = SaleTransactionProduct::where('sale_transaction_id',$transactionId)->whereNotIn('sale_transaction_product_id',$request->sale_produk_id )->get();
+                            if(count($getProducts) != 0){
+                                foreach($getProducts as $product){
+                                    $deleteProduct = SaleTransactionProduct::find($product->sale_transaction_product_id);
+                                    $deleteProduct->delete();
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    if($request->produk_id[$keySaleTransaction] != null){
+                        $newTransactionProduct = new SaleTransactionProduct;
+                        $newTransactionProduct->product_id = $request->produk_id[$keySaleTransaction];
+                        $newTransactionProduct->qty = $request->qty[$keySaleTransaction];
+                        $newTransactionProduct->sale_transaction_id = $transactionId;
+                        $newTransactionProduct->save();
+                    }
+
+                }
+            }
+
+
+            Alert::success('Berhasil', 'Transaksi berhasil diubah.');
+            return redirect()->back();
+        }
+        Alert::error('Gagal', 'Transaksi gagal diubah.');
+        return redirect()->back()->withErrors($validate)->withInput();
+
+    }
+
     public function transactionSortByDateSum(Request $request)
     {
         $fromDate = Carbon::parse($request->fromDate)->format('Y-m-d');
@@ -137,6 +216,11 @@ class TransactionController extends Controller
     }
     public function transactionDelete($transactionId)
     {
+        $saleProducts = SaleTransactionProduct::where('sale_transaction_id',$transactionId)->get();
+        foreach ($saleProducts as $saleProduct) {
+            $deleteTransactionProduct = SaleTransactionProduct::find($saleProduct->sale_transaction_product_id);
+            $deleteTransactionProduct->delete();
+        }
         $deleteTransaction = SaleTransaction::find($transactionId);
         $deleteTransaction->delete();
 

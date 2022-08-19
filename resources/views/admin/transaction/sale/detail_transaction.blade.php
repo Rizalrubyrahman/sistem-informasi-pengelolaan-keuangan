@@ -122,15 +122,27 @@
                         @endif
                     </div>
                 </div>
-                <div class="form-group mt-4">
-                    Catatan
-                    <br>
-                    @if ($saleTransaction->note == null)
-                        <strong>-</strong>
-                    @else
-                        <strong>{{ $saleTransaction->note }}</strong>
-                    @endif
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        Catatan
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end">
+                        Metode Pembayaran
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        @if ($saleTransaction->note == null)
+                            <strong>-</strong>
+                        @else
+                            <strong>{{ $saleTransaction->note }}</strong>
+                        @endif
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end">
+                       <i class="fas {{ $saleTransaction->paymentMethod->icon }}" style="font-size: 18px; margin-right:5px"></i> <span class="ml-4"><strong>{{ $saleTransaction->paymentMethod->payment_method }}</strong></span>
+                    </div>
+                </div>
+
                 <div class="row mt-3">
                     <div class="col-md-6">
                        Channel Penjualan

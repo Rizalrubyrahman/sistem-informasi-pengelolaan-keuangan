@@ -15,7 +15,6 @@ class CreateSaleTransactionsTable extends Migration
     {
         Schema::create('sale_transactions', function (Blueprint $table) {
             $table->id('sale_transaction_id');
-            $table->foreignId('product_id')->nullable();
             $table->foreignId('payment_method_id')->nullable();
             $table->foreignId('sale_channel_id')->nullable();
             $table->date('date');

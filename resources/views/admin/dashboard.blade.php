@@ -62,7 +62,7 @@
         <div class="container-card">
             <div class="card mt-4 card-content">
                 <div class="card-header" style="border-radius: 15px;">
-                    <h5 class="card-title mb-0">Browser Usage</h5>
+                    <h5 class="card-title mb-0">Data Produk</h5>
                 </div>
                 <div class="card-body d-flex">
                     <div class="align-self-center w-100">
@@ -98,7 +98,7 @@
             <div class="card mt-4 card-content">
                 <div class="card-header" style="border-radius: 15px;">
 
-                    <h5 class="card-title mb-0">Calendar</h5>
+                    <h5 class="card-title mb-0">Kalender</h5>
                 </div>
                 <div class="card-body d-flex">
                     <div class="align-self-center w-100">
