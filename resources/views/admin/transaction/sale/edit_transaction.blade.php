@@ -165,7 +165,13 @@
                                                                                         <td>{{ $product->product_name }}</td>
                                                                                         <td align="center">{{ $product->qty }}</td>
                                                                                         <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
-                                                                                        <td align="center"><div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div></td>
+                                                                                        <td align="center">
+                                                                                            @if ($product->qty == 0)
+                                                                                                <div class="btn btn-sm" style="background-color: #e9ecef;border: 1px solid #ced4da;">Pilih</div>
+                                                                                            @else
+                                                                                                <div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
+                                                                                            @endif
+                                                                                            </td>
                                                                                     </tr>
                                                                                 @empty
                                                                                     <tr>
@@ -251,7 +257,13 @@
                                                                                     <td>{{ $product->product_name }}</td>
                                                                                     <td align="center">{{ $product->qty }}</td>
                                                                                     <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
-                                                                                    <td align="center"><div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div></td>
+                                                                                    <td align="center">
+                                                                                        @if ($product->qty == 0)
+                                                                                            <div class="btn btn-sm" style="background-color: #e9ecef;border: 1px solid #ced4da;">Pilih</div>
+                                                                                        @else
+                                                                                            <div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
+                                                                                        @endif
+                                                                                    </td>
                                                                                 </tr>
                                                                             @empty
                                                                                 <tr>

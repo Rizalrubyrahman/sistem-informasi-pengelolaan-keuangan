@@ -139,11 +139,12 @@ class TransactionController extends Controller
         ],$messages);
         if($validate->passes())
         {
-            $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
+
+            if ($request->hasFile('bukti_pembayaran')) {
+                $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
             $prefix_name = 'bukti_pembayaran_';
             $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/images/bukti_pembayaran';
                 $imageBukti->move($destinationPath, $prefix_name.$images_name);
-            if ($request->hasFile('bukti_pembayaran')) {
                 $buktiPembayaran = $prefix_name.$images_name;
             }else{
                 $buktiPembayaran = null;
@@ -167,6 +168,15 @@ class TransactionController extends Controller
                 if($saleTransactionId != null){
                     foreach($saleProducts as $saleProduct){
                         if($saleProduct->sale_transaction_product_id == $saleTransactionId){
+                            $updateProducts = Product::find($request->produk_id[$saleTransactionId]);
+                            if($request->qty[$saleTransactionId] > $updateProducts->qty){
+                                Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                                return redirect()->back();
+                            }else{
+                                $updateProducts->qty = ($updateProducts->qty - $request->qty[$saleTransactionId]);
+                                $updateProducts->save();
+                            }
+
                             $updateTransactionProduct = SaleTransactionProduct::find($saleTransactionId);
                             $updateTransactionProduct->product_id = $request->produk_id[$saleTransactionId];
                             $updateTransactionProduct->qty = $request->qty[$saleTransactionId];
@@ -183,6 +193,15 @@ class TransactionController extends Controller
                     }
                 }else{
                     if($request->produk_id[$keySaleTransaction] != null){
+                        $updateProduct = Product::find($request->produk_id[$keySaleTransaction]);
+                        if($request->qty[$keySaleTransaction] > $updateProduct->qty){
+                            Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                            return redirect()->back();
+                        }else{
+                            $updateProduct->qty = ($updateProduct->qty - $request->qty[$keySaleTransaction]);
+                            $updateProduct->save();
+                        }
+
                         $newTransactionProduct = new SaleTransactionProduct;
                         $newTransactionProduct->product_id = $request->produk_id[$keySaleTransaction];
                         $newTransactionProduct->qty = $request->qty[$keySaleTransaction];
@@ -215,11 +234,12 @@ class TransactionController extends Controller
         ],$messages);
         if($validate->passes())
         {
-            $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
-            $prefix_name = 'bukti_pembayaran_';
-            $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/images/bukti_pembayaran';
-                $imageBukti->move($destinationPath, $prefix_name.$images_name);
+
             if ($request->hasFile('bukti_pembayaran')) {
+                $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
+                $prefix_name = 'bukti_pembayaran_';
+                $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/images/bukti_pembayaran';
+                $imageBukti->move($destinationPath, $prefix_name.$images_name);
                 $buktiPembayaran = $prefix_name.$images_name;
             }else{
                 $buktiPembayaran = null;
@@ -237,6 +257,16 @@ class TransactionController extends Controller
 
             foreach($request->produk_id as $keyProduct => $productId){
                 if($productId != null){
+
+                    $updateProduct = Product::find($productId);
+                    if($request->qty[$keyProduct] > $updateProduct->qty){
+                        Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                        return redirect()->back();
+                    }else{
+                        $updateProduct->qty = ($updateProduct->qty - $request->qty[$keyProduct]);
+                        $updateProduct->save();
+                    }
+
                     $newTransactionProduct = new SaleTransactionProduct;
                     $newTransactionProduct->product_id = $productId;
                     $newTransactionProduct->qty = $request->qty[$keyProduct];
