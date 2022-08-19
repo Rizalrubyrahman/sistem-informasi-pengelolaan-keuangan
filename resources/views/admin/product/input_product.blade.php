@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title','Tambah Stok Barang')
+@section('title','Tambah Produk')
 @section('content')
 <div class="card shadow">
     <div class="card-body">
-        <h1 class="h3 mb-3"><strong>Tambah Stok Barang</strong> </h1>
+        <h1 class="h3 mb-3"><strong>Tambah Produk</strong> </h1>
         <div class="row">
             <div class="col-md-6 mt-4">
-                <form action="{{ url('/stok_barang/tambah') }}" method="POST">
+                <form action="{{ url('/produk/tambah') }}" method="POST">
                     @csrf
                     <div class="form-group mt-2">
                         <label for="product_name">Nama Produk</label>
@@ -26,13 +26,13 @@
                             </span>
                         @enderror
                     </div>
-                    <div class="form-group mt-2">
+                    {{-- <div class="form-group mt-2">
                         <label for="qty">Stok</label>
                         <input type="number" min="0"  name="qty" id="qty" value="{{ old('qty') }}" class="form-control"/>
-                    </div>
+                    </div> --}}
                     <div class="form-group mt-2">
                         <button type="submit" class="btn btn-success">Simpan</button>
-                        <a href="{{ url('stok_barang') }}" style="border-color: #1cbb8c" class="btn">Kembali</a>
+                        <a href="{{ url('produk') }}" style="border-color: #1cbb8c" class="btn">Kembali</a>
                     </div>
                 </form>
             </div>

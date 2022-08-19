@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Stok Barang')
+@section('title','Produk')
 @section('style')
     <style>
         .modal {
@@ -52,18 +52,18 @@
     </style>
 @endsection
 @section('content')
-<h1 class="h3 mb-3"><strong>Stok Barang</strong> </h1>
+<h1 class="h3 mb-3"><strong>Produk</strong> </h1>
 <div class="card shadow" style="border-radius: 15px">
     <div class="card-body">
 
         <div class="row">
             <div class="col-md-6 mt-3">
-                <a href="{{ url('/stok_barang/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Stok Barang</a>
+                <a href="{{ url('/produk/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Produk</a>
             </div>
             <div class="col-md-6 mt-4">
                 <div class="d-flex justify-content-end">
                     <div class="input-group" >
-                        <input type="text" class="form-control" onkeyup="showIconClear(this)" style="border-right:0px;border-color: #1cbb8c" placeholder="Cari barang" aria-label="Cari barang" id="cari_barang" aria-describedby="button-addon2">
+                        <input type="text" class="form-control" onkeyup="showIconClear(this)" style="border-right:0px;border-color: #1cbb8c" placeholder="Cari produk" aria-label="Cari produk" id="cari_barang" aria-describedby="button-addon2">
                         <button class="btn" style="border-left:0px;border-color: #1cbb8c" type="button" id="btnClear"><span id="clear" style="display: none;"><i class="fa-solid fa-xmark"></i></span></button>
                     </div>
                     <div>&nbsp;</div>
@@ -71,8 +71,8 @@
                         <option>Filter</option>
                         <option value="1">A - Z</option>
                         <option value="2">Z - A</option>
-                        <option value="3">Stok tersedikit</option>
-                        <option value="4">Stok terbanyak</option>
+                        {{-- <option value="3">Stok tersedikit</option>
+                        <option value="4">Stok terbanyak</option> --}}
                     </select>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                     <td align="center">No</td>
                     <td>Nama Barang</td>
                     <td align="center">Harga</td>
-                    <td align="center">Stok</td>
+                    {{-- <td align="center">Stok</td> --}}
                     <td align="center">Opsi</td>
                 </tr>
             </thead>
@@ -94,9 +94,9 @@
                         <td align="center">{{ $loop->iteration }}</td>
                         <td>{{ $product->product_name }}</td>
                         <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
-                        <td align="center">{{ $product->qty }}</td>
+                        {{-- <td align="center">{{ $product->qty }}</td> --}}
                         <td align="center">
-                            <a href="{{ url('/stok_barang/ubah/'.$product->product_id) }}" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
+                            <a href="{{ url('/produk/ubah/'.$product->product_id) }}" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
 
                             <button type="button" class="btn btn-danger btnProductModalDelete" productId="{{ $product->product_id }}">
                                 <i class="fa-solid fa-trash-can"></i>
@@ -113,7 +113,7 @@
                                             Anda yakin ingin menghapus <strong>{{ $product->product_name }}</strong> ?
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{{ url('/stok_barang/hapus/'.$product->product_id) }}" method="post">
+                                            <form action="{{ url('/produk/hapus/'.$product->product_id) }}" method="post">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger">Hapus</button>
                                             </form>
@@ -189,7 +189,7 @@
             $value=$(this).val();
             $.ajax({
                     type : 'get',
-                    url : '{{url("/stok_barang/cari")}}',
+                    url : '{{url("/produk/cari")}}',
                     data:{'search':$value},
                     success:function(data){
                         $('tbody').html(data);
@@ -201,7 +201,7 @@
             $value=$(this).val();
             $.ajax({
                     type : 'get',
-                    url : '{{url("/stok_barang/filter")}}',
+                    url : '{{url("/produk/filter")}}',
                     data:{'search':$value},
                     success:function(data){
                         $('tbody').html(data);
@@ -214,7 +214,7 @@
                 $("#clear").css("display", "none");
                 $.ajax({
                     type : 'get',
-                    url : '{{url("/stok_barang/cari")}}',
+                    url : '{{url("/produk/cari")}}',
                     data:{'search':null},
                     success:function(data){
                         $('tbody').html(data);

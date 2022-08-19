@@ -3,9 +3,9 @@
         <td align="center">{{ $loop->iteration }}</td>
         <td>{{ $product->product_name }}</td>
         <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
-        <td align="center">{{ $product->qty }}</td>
+        {{-- <td align="center">{{ $product->qty }}</td> --}}
         <td align="center">
-            <a href="{{ url('/stok_barang/ubah/'.$product->product_id) }}" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
+            <a href="{{ url('/produk/ubah/'.$product->product_id) }}" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
 
             <button type="button" class="btn btn-danger btnProductModalDelete" productId="{{ $product->product_id }}">
                 <i class="fa-solid fa-trash-can"></i>
@@ -22,7 +22,7 @@
                             Anda yakin ingin menghapus <strong>{{ $product->product_name }}</strong> ?
                         </div>
                         <div class="modal-footer">
-                            <form action="{{ url('/stok_barang/hapus/'.$product->product_id) }}" method="post">
+                            <form action="{{ url('/produk/hapus/'.$product->product_id) }}" method="post">
                                 @csrf
                                 <button type="submit" class="btn btn-danger">Hapus</button>
                             </form>
@@ -85,7 +85,7 @@
         $value=$(this).val();
         $.ajax({
                 type : 'get',
-                url : '{{url("/stok_barang/cari_list")}}',
+                url : '{{url("/produk/cari_list")}}',
                 data:{'search':$value},
                 success:function(data){
                     $('tbody').html(data);
@@ -98,7 +98,7 @@
 
         $.ajax({
                 type : 'get',
-                url : '{{url("/stok_barang/filter")}}',
+                url : '{{url("/produk/filter")}}',
                 data:{'search':$value},
                 success:function(data){
                     $('tbody').html(data);
@@ -111,7 +111,7 @@
             $("#clear").css("display", "none");
             $.ajax({
                 type : 'get',
-                url : '{{url("/stok_barang/cari_list")}}',
+                url : '{{url("/produk/cari_list")}}',
                 data:{'search':null},
                 success:function(data){
                     $('tbody').html(data);

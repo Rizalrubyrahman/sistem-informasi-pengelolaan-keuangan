@@ -168,14 +168,14 @@ class TransactionController extends Controller
                 if($saleTransactionId != null){
                     foreach($saleProducts as $saleProduct){
                         if($saleProduct->sale_transaction_product_id == $saleTransactionId){
-                            $updateProducts = Product::find($request->produk_id[$saleTransactionId]);
-                            if($request->qty[$saleTransactionId] > $updateProducts->qty){
-                                Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
-                                return redirect()->back();
-                            }else{
-                                $updateProducts->qty = ($updateProducts->qty - $request->qty[$saleTransactionId]);
-                                $updateProducts->save();
-                            }
+                            // $updateProducts = Product::find($request->produk_id[$saleTransactionId]);
+                            // if($request->qty[$saleTransactionId] > $updateProducts->qty){
+                            //     Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                            //     return redirect()->back();
+                            // }else{
+                            //     $updateProducts->qty = ($updateProducts->qty - $request->qty[$saleTransactionId]);
+                            //     $updateProducts->save();
+                            // }
 
                             $updateTransactionProduct = SaleTransactionProduct::find($saleTransactionId);
                             $updateTransactionProduct->product_id = $request->produk_id[$saleTransactionId];
@@ -193,14 +193,14 @@ class TransactionController extends Controller
                     }
                 }else{
                     if($request->produk_id[$keySaleTransaction] != null){
-                        $updateProduct = Product::find($request->produk_id[$keySaleTransaction]);
-                        if($request->qty[$keySaleTransaction] > $updateProduct->qty){
-                            Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
-                            return redirect()->back();
-                        }else{
-                            $updateProduct->qty = ($updateProduct->qty - $request->qty[$keySaleTransaction]);
-                            $updateProduct->save();
-                        }
+                        // $updateProduct = Product::find($request->produk_id[$keySaleTransaction]);
+                        // if($request->qty[$keySaleTransaction] > $updateProduct->qty){
+                        //     Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                        //     return redirect()->back();
+                        // }else{
+                        //     $updateProduct->qty = ($updateProduct->qty - $request->qty[$keySaleTransaction]);
+                        //     $updateProduct->save();
+                        // }
 
                         $newTransactionProduct = new SaleTransactionProduct;
                         $newTransactionProduct->product_id = $request->produk_id[$keySaleTransaction];
@@ -258,14 +258,14 @@ class TransactionController extends Controller
             foreach($request->produk_id as $keyProduct => $productId){
                 if($productId != null){
 
-                    $updateProduct = Product::find($productId);
-                    if($request->qty[$keyProduct] > $updateProduct->qty){
-                        Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
-                        return redirect()->back();
-                    }else{
-                        $updateProduct->qty = ($updateProduct->qty - $request->qty[$keyProduct]);
-                        $updateProduct->save();
-                    }
+                    // $updateProduct = Product::find($productId);
+                    // if($request->qty[$keyProduct] > $updateProduct->qty){
+                    //     Alert::error('Gagal', 'Qty tidak boleh melebihi stok produk.');
+                    //     return redirect()->back();
+                    // }else{
+                    //     $updateProduct->qty = ($updateProduct->qty - $request->qty[$keyProduct]);
+                    //     $updateProduct->save();
+                    // }
 
                     $newTransactionProduct = new SaleTransactionProduct;
                     $newTransactionProduct->product_id = $productId;

@@ -65,10 +65,7 @@ class ProductController extends Controller
             $products = Product::orderBy('product_name','ASC')->paginate(10);
         }else if($request->search == 2){
             $products = Product::orderBy('product_name','DESC')->paginate(10);
-        }else if($request->search == 3){
-            $products = Product::orderBy('qty','ASC')->paginate(10);
-        }else if($request->search == 4){
-            $products = Product::orderBy('qty','DESC')->paginate(10);
+
         }else {
             $products = Product::orderBy('product_name')->paginate(10);
         }
@@ -91,13 +88,13 @@ class ProductController extends Controller
             $newProduct = new Product;
             $newProduct->product_name = $request->product_name;
             $newProduct->product_price = $productPrice;
-            $newProduct->qty = ($request->qty == null) ? 0 : $request->qty;
+            $newProduct->qty = null;
             $newProduct->created_at = Carbon::now();
             $newProduct->updated_at = NULL;
             $newProduct->save();
 
             Alert::success('Berhasil', 'Produk berhasil disimpan.');
-            return redirect('stok_barang');
+            return redirect('produk');
         }
             Alert::error('Gagal', 'Produk gagal disimpan.');
             return redirect()->back()->withErrors($validate)->withInput();
@@ -118,12 +115,12 @@ class ProductController extends Controller
             $updateProduct = Product::find($productId);
             $updateProduct->product_name = $request->product_name;
             $updateProduct->product_price = $productPrice;
-            $updateProduct->qty = ($request->qty == null) ? 0 : $request->qty;
+            $updateProduct->qty = null;
             $updateProduct->updated_at = Carbon::now();
             $updateProduct->save();
 
             Alert::success('Berhasil', 'Produk berhasil diubah.');
-            return redirect('stok_barang');
+            return redirect('produk');
         }
             Alert::error('Gagal', 'Produk gagal diubah.');
             return redirect()->back()->withErrors($validate)->withInput();
@@ -134,6 +131,6 @@ class ProductController extends Controller
         $deleteProduct->delete();
 
         Alert::success('Berhasil', 'Produk berhasil dihapus.');
-        return redirect('stok_barang');
+        return redirect('produk');
     }
 }

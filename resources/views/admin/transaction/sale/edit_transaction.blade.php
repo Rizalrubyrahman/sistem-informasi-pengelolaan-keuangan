@@ -152,7 +152,7 @@
                                                                                 <tr>
                                                                                     <th class="text-center">No</th>
                                                                                     <th class="text-center">Nama Produk</th>
-                                                                                    <th class="text-center">Stok</th>
+                                                                                    {{-- <th class="text-center">Stok</th> --}}
                                                                                     <th class="text-center">Harga</th>
                                                                                     <th></th>
                                                                                 </tr>
@@ -163,14 +163,14 @@
                                                                                     <tr>
                                                                                         <td class="text-center">{{ $noProduct++ }}</td>
                                                                                         <td>{{ $product->product_name }}</td>
-                                                                                        <td align="center">{{ $product->qty }}</td>
+                                                                                        {{-- <td align="center">{{ $product->qty }}</td> --}}
                                                                                         <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
                                                                                         <td align="center">
-                                                                                            @if ($product->qty == 0)
+                                                                                            {{-- @if ($product->qty == 0)
                                                                                                 <div class="btn btn-sm" style="background-color: #e9ecef;border: 1px solid #ced4da;">Pilih</div>
-                                                                                            @else
+                                                                                            @else --}}
                                                                                                 <div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
-                                                                                            @endif
+                                                                                            {{-- @endif --}}
                                                                                             </td>
                                                                                     </tr>
                                                                                 @empty
@@ -244,7 +244,7 @@
                                                                             <tr>
                                                                                 <th class="text-center">No</th>
                                                                                 <th class="text-center">Nama Produk</th>
-                                                                                <th class="text-center">Stok</th>
+                                                                                {{-- <th class="text-center">Stok</th> --}}
                                                                                 <th class="text-center">Harga</th>
                                                                                 <th></th>
                                                                             </tr>
@@ -255,14 +255,14 @@
                                                                                 <tr>
                                                                                     <td class="text-center">{{ $noProduct++ }}</td>
                                                                                     <td>{{ $product->product_name }}</td>
-                                                                                    <td align="center">{{ $product->qty }}</td>
+                                                                                    {{-- <td align="center">{{ $product->qty }}</td> --}}
                                                                                     <td align="center">Rp {{ number_format($product->product_price, 0, ",", ".") }}</td>
                                                                                     <td align="center">
-                                                                                        @if ($product->qty == 0)
+                                                                                        {{-- @if ($product->qty == 0)
                                                                                             <div class="btn btn-sm" style="background-color: #e9ecef;border: 1px solid #ced4da;">Pilih</div>
-                                                                                        @else
+                                                                                        @else --}}
                                                                                             <div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
-                                                                                        @endif
+                                                                                        {{-- @endif --}}
                                                                                     </td>
                                                                                 </tr>
                                                                             @empty

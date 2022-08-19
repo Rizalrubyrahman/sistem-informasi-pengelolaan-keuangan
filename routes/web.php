@@ -19,7 +19,7 @@ Route::post('/login','AuthController@login');
 Route::post('/logout','AuthController@logout');
 
 Route::get('/dashboard', 'DashboardController@dashboard');
-Route::prefix('stok_barang')->group(function () {
+Route::prefix('produk')->group(function () {
     Route::get('/','ProductController@productView');
     Route::get('tambah','ProductController@productInput');
     Route::post('tambah','ProductController@productStore');

@@ -13,9 +13,9 @@
                     <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
                 </a>
             </li>
-            <li class="sidebar-item {{ Request::is('stok_barang') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ url('stok_barang') }}">
-                    <i class="fas fa-box-archive align-middle"></i> <span class="align-middle">Stok Barang</span>
+            <li class="sidebar-item {{ Request::is('produk') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ url('produk') }}">
+                    <i class="fas fa-box-archive align-middle"></i> <span class="align-middle">Produk</span>
                 </a>
             </li>
             <li class="sidebar-item {{ Request::is('transaksi') ? 'active' : '' }}">
