@@ -76,9 +76,9 @@ class TransactionController extends Controller
     {
         $output="";
         if($request->search == 1){
-            $saleTransactions = SaleTransaction::orderBy('date','ASC')->get();
-        }else if($request->search == 2){
             $saleTransactions = SaleTransaction::orderBy('date','DESC')->get();
+        }else if($request->search == 2){
+            $saleTransactions = SaleTransaction::orderBy('date','ASC')->get();
         }else {
             $saleTransactions = SaleTransaction::orderBy('date')->get();
         }
@@ -310,10 +310,9 @@ class TransactionController extends Controller
         $toDate = $request->toDate;
         $pdf = PDF::loadView('admin.transaction.sale.export_pdf_transaction',compact(['saleTransactions','fromDate','toDate']));
         $fileName =  'Laporan Laba Rugi.'.$tanggal.'.pdf' ;
-        $pdf->save($fileName);
 
-        $pdf = public_path($fileName);
-        return response()->download($pdf);
+
+        return $pdf->stream();
     }
     public function transactionDelete($transactionId)
     {

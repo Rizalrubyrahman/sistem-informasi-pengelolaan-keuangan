@@ -59,11 +59,11 @@
     <br>
     <table class="table1" style="width: 100%">
         <tr style="background-color: #DDDCDC; padding:8px;">
-            <th style="background-color: #DDDCDC; padding:8px;" align="center">Tanggal</th>
-            <th style="background-color: #DDDCDC; padding:8px;" align="center">Deskripsi</th>
-            <th style="background-color: #DDDCDC; padding:8px;" align="center">Penjualan</th>
-            <th style="background-color: #DDDCDC; padding:8px;" align="center">Pengeluaran</th>
-            <th style="background-color: #DDDCDC; padding:8px;" align="center">Keuntungan</th>
+            <th style="background-color: #DDDCDC; padding:8px;" class="text-center">Tanggal</th>
+            <th style="background-color: #DDDCDC; padding:8px;" class="text-center">Deskripsi</th>
+            <th style="background-color: #DDDCDC; padding:8px;" class="text-center">Penjualan</th>
+            <th style="background-color: #DDDCDC; padding:8px;" class="text-center">Pengeluaran</th>
+            <th style="background-color: #DDDCDC; padding:8px;" class="text-center">Keuntungan</th>
         </tr>
         @foreach ($saleTransactions as $saleTransaction)
         @php

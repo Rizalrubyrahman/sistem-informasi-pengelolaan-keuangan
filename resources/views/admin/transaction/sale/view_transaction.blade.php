@@ -15,13 +15,16 @@
         $sumSale += $saleTransaction->sale_amount;
         $sumExpense += $saleTransaction->expense_amount;
     }
-    foreach ($getSaleTransactions as $date => $getTransaction) {
+    if(count($saleTransactions) != 0){
+        foreach ($getSaleTransactions as $date => $getTransaction) {
         foreach ($getTransaction as $transaction) {
             $sumSaleToday[$date][] = $transaction['Penjualan'];
             $sumExpenseToday[$date][] = $transaction['Pengeluaran'];
         }
 
     }
+    }
+
 @endphp
 @section('style')
     <style>
@@ -117,7 +120,7 @@
                             @elseif (($sumSale - $sumExpense) < 0)
                                 <span style="color:#dc4e4d" id="spanKeuntungan">Rp {{ number_format(($sumSale - $sumExpense), 0, ",", ".") }}</span>
                             @else
-                                -
+                            <span id="spanKeuntungan">-</span>
                             @endif
                         </td>
                     </tr>
@@ -146,6 +149,8 @@
                 <a href="{{ url('/transaksi/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Transaksi</a>
             </div>
         </div>
+        <form action="{{ url('/transaksi/export_pdf') }}" method="get">
+            @csrf
         <div class="row">
             <div class="col-md-6 mt-3">
                 <div class="row">
@@ -183,15 +188,8 @@
                         </select>
                     </div>
                     <div>&nbsp;</div>
-                    <div class="form-group">
-                        <label>&nbsp;</label>
-                        <select name="filter" id="filter"  class="form-select" style="border-color: #1cbb8c;width:130px;">
-                            <option value="">Filter</option>
-                            <option value="1">Semua</option>
-                            <option value="2">Lunas</option>
-                            <option value="3">Belum Lunas</option>
-                        </select>
-                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -286,11 +284,14 @@
             </tbody>
         </table>
         <div class="form-group mt-4">
-            <button type="button" class="btn btn-danger" id="btnExportPDF"><i class="fas fa-file-pdf"></i> Unduh PDF</button>
-            <button type="submit" class="btn btn-success" id="btnExportExcel"><i class="fas fa-file-excel"></i> Unduh Excel</button>
+            <button type="submit" class="btn btn-danger" id="btnExportPDF" formtarget="_blank"><i class="fas fa-file-pdf" ></i> Unduh PDF</button>
+    </form>
+
+            <button type="button" class="btn btn-success" id="btnExportExcel"><i class="fas fa-file-excel"></i> Unduh Excel</button>
 
         </div>
         <input type="hidden" name="date" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" id="dateNow">
+
         {{-- <nav class="d-flex justify-content-center" aria-label="Page navigation example">
         {{ $products->links() }}
         </nav> --}}
@@ -441,11 +442,12 @@
                             separator_profitAmount = sisa_profitAmount ? '.' : '';
                             rupiah_profitAmount += ribuan_profitAmount.join('.');
                         }
+
                         if(profitAmount > 0){
                             $('#spanKeuntungan').text('Rp '+rupiah_profitAmount).css("color","#2ab284");
                             $('#textKeuntungan').css("color","#2ab284");
                         }else if(profitAmount < 0){
-                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount).css("color","#dc4e4d");
+                            $('#spanKeuntungan').text('Rp -'+rupiah_profitAmount).css("color","#dc4e4d");
                             $('#textKeuntungan').css("color","#dc4e4d");
                         }else{
                             $('#spanKeuntungan').text('Rp '+rupiah_profitAmount);
@@ -489,32 +491,7 @@
 
             });
         })
-        $('#btnExportPDF').on('click',function(){
-            $toDate=$('#toDate').val();
-            $fromDate=$('#fromDate').val();
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-            $.ajax({
-                    type : 'get',
-                    url : '{{url("/transaksi/export_pdf")}}',
-                    data:{'fromDate':$fromDate,'toDate':$toDate},
-                    xhrFields:{
-                        responseType: 'blob'
-                    },
-                                success: function(response){
-                //     { var blob = new Blob([response]);
-                // var link = document.createElement('a');
-                // link.href = window.URL.createObjectURL(blob);
-                // // link.download = "Sample.pdf";
-                // link.click();
 
-                    },
-                    fail: function(data) {
-                        alert('Not downloaded');
-                        //console.log('fail',  data);
-                    }
-
-            });
-        })
         $('#btnClear').on('click',function(){
                 $value = $('#transactionSearch').val('');
                 $("#clear").css("display", "none");
