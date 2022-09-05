@@ -125,7 +125,8 @@
                                 <tr >
                                     <th class="text-center">Nama Produk</th>
                                     <th class="text-center"><span style="margin-left: 10px">Qty</span></th>
-                                    <th class="text-center"><span style="margin-left: 50px">Harga</span></th>
+                                    <th class="text-center"><span style="margin-left: 20px">Harga</span></th>
+                                    <th class="text-center"><span style="margin-left: 20px"> Total</span></th>
                                     <th></th>
                                 </tr>
                                 <tbody style="border:none">
@@ -192,7 +193,7 @@
                                                     <div class="col-md-8">
                                                         <input type="hidden" value="{{ $saleProduct->product->product_id }}" name="produk_id[{{ $saleProduct->sale_transaction_product_id  }}]" id="produk_id{{ $no }}">
                                                         <input type="hidden" value="{{ $saleProduct->sale_transaction_product_id }}" name="sale_produk_id[{{ $saleProduct->sale_transaction_product_id }}]" id="sale_produk_id{{ $no }}">
-                                                        <input  style="width: 100%; border:1px solid #ced4da" class="form-control" type="text" value="{{ $saleProduct->product->product_name }}" name="name_product[]" id="name_product{{ $no }}" readonly>
+                                                        <input  style="width: 170px; border:1px solid #ced4da" class="form-control" type="text" value="{{ $saleProduct->product->product_name }}" name="name_product[]" id="name_product{{ $no }}" readonly>
                                                     </div>
                                                     <div class="col-md-2"></div>
                                                 </div>
@@ -214,7 +215,12 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input style="margin-left: 50px; width:250px;" class="form-control" type="text" name="produk_price" value="Rp {{ number_format($saleProduct->product->product_price, 0, ",", ".") }}" readonly id="price{{ $no }}" >
+                                                <input style="margin-left: 19px; width:200px;" class="form-control" type="text" name="produk_price" value="Rp {{ number_format($saleProduct->product->product_price, 0, ",", ".") }}" readonly id="price{{ $no }}" >
+                                                <input type="hidden" name="dnPrice" id="hdnPrice{{ $no }}" value="{{ $saleProduct->product->product_price }}">
+                                            </td>
+                                            <td>
+                                                <input style="width:200px;margin-left: 10px;" class="form-control" type="text" name="total" value="Rp {{ number_format(($saleProduct->product->product_price * $saleProduct->qty), 0, ",", ".") }}" readonly id="total{{ $no }}" >
+                                                <input type="hidden" name="dnPrice" id="hdnTotalProduct{{ $no }}" value="{{ $saleProduct->product->product_price * $saleProduct->qty }}" class="hdnTotalProduct">
                                             </td>
                                             <td>
                                                 <button class="btn btn-danger btn-sm" type="button" id="btnClose{{ $no }}"><i class="fas fa-close"></i></button>
@@ -222,7 +228,7 @@
                                         </tr>
                                         @php
                                             $no++;
-
+                                            $totalSale[] = $saleProduct->product->product_price * $saleProduct->qty;
                                         @endphp
                                     @empty
                                     <tr class="trProduct">
@@ -284,7 +290,7 @@
                                                 <div class="col-md-8">
                                                     <input type="hidden" value="" name="produk_id[]" id="produk_id1">
                                                     <input type="hidden" value="" name="sale_produk_id[]" id="sale_produk_id1">
-                                                    <input  style="width: 100%; border:1px solid #ced4da" class="form-control" type="text" value="" name="name_product[]" id="name_product1" readonly>
+                                                    <input  style="width: 170px; border:1px solid #ced4da" class="form-control" type="text" value="" name="name_product[]" id="name_product1" readonly>
                                                 </div>
                                                 <div class="col-md-2"></div>
                                             </div>
@@ -306,19 +312,46 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input style="margin-left: 50px; width:250px;" class="form-control" type="text" name="produk_price" value="" readonly id="price1" >
+                                            <input style="margin-left: 19px; width:200px;" class="form-control" type="text" name="produk_price" value="" readonly id="price1" >
+                                            <input type="hidden" name="dnPrice" id="hdnPrice1">
+                                        </td>
+                                        <td>
+                                            <input style="width:200px;margin-left: 10px;" class="form-control" type="text" name="total" readonly id="total1" >
+                                            <input type="hidden" name="dnPrice" id="hdnTotalProduct1" class="hdnTotalProduct">
                                         </td>
                                         <td>
                                             <button class="btn btn-danger btn-sm" type="button" id="btnClose1"><i class="fas fa-close"></i></button>
                                         </td>
                                     </tr>
                                     @endforelse
+                                    <tr style="border-bottom: 1px solid white">
+                                        <td colspan="3" align="right"  style="border-bottom: 1px solid white">Total</td>
+                                        <td  style="border-bottom: 1px solid white">
 
+                                            @if (count($saleProducts) == 0)
+                                                <input style="margin-left: 10px; width:200px;" id="total" type="text" disabled class="form-control" >
+                                                <input type="hidden" name="dnPrice" id="hdnTotal">
+
+                                            @else
+                                                <input style="margin-left: 10px; width:200px;" id="total" type="text" disabled class="form-control" value="Rp {{ number_format(array_sum($totalSale), 0, ",", ".") }}">
+                                                <input type="hidden" name="dnPrice" id="hdnTotal" value="{{ array_sum($totalSale) }}">
+
+                                            @endif
+
+                                        </td>
+                                        <td  style="border-bottom: 1px solid white"></td>
+                                    </tr>
+                                    <tr style="height: 10px;border-top: 1px solid white">
+                                        <td align="right" colspan="4" style="padding:0;border-top: 1px solid white">
+                                            <a id="addToSale" style="font-size:13px; color:rgb(116, 116, 240); margin-right:10px">Masukan Ke Nominal Penjualan</a>
+                                        </td>
+                                        <td  style="border-top: 1px solid white"></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="form-group d-flex justify-content-center">
-                            <button id="btnAddRow" style="margin-left:165px" class="btn btn-success" type="button">Tambah Produk</button>
+                            <button id="btnAddRow" style="margin-left:320px" class="btn btn-success" type="button">Tambah Produk</button>
                         </div>
 
                         <div class="row mt-2">
@@ -351,9 +384,23 @@
 @section('script')
 
     <script>
+    $("#addToSale").click(function() {
+        const total = ($('#hdnTotal').val() == '') ? 0 : $('#hdnTotal').val();
+        let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
 
+                }
+                let valTotal = 'Rp '+rupiah_total;
+        $('#sale_amount').val(valTotal);
+
+    });
         $("#btnAddRow").click(function() {
-            var lastRow = $('#tableProduct>tbody>tr:last');
+            var lastRow = $('#tableProduct>tbody>.trProduct:last');
             var cloned = lastRow.clone();
             cloned.find('input, select, button,.modal').each(function () {
                 var id = $(this).attr('id');
@@ -381,16 +428,52 @@
             close(index);
             modal(index);
             ValidateQty(index);
+
         });
         function minus(index){
             $("#btnMin"+index).click(function() {
                 let valQty = $("#qty"+index).val();
-                if (valQty > 0) {
+                let price = $("#hdnPrice"+index).val();
+                let totalProduct = $("#hdnTotalProduct"+index).val();
+                if (valQty > 1) {
                     var newVal = valQty - 1;
+                    let totalPrice = parseInt(parseInt(totalProduct) - parseInt(price));
+                $("#hdnTotalProduct"+index).val(totalPrice);
+                let number_string_totalPrice = totalPrice.toString(),
+                    sisa_totalPrice = number_string_totalPrice.length % 3,
+                    rupiah_totalPrice = number_string_totalPrice.substr(0, sisa_totalPrice),
+                    ribuan_totalPrice = number_string_totalPrice.substr(sisa_totalPrice).match(/\d{3}/g);
+                if(ribuan_totalPrice){
+                    separator_totalPrice = sisa_totalPrice ? '.' : '';
+                    rupiah_totalPrice += separator_totalPrice + ribuan_totalPrice.join('.');
+
+                }
+                let valTotalPrice = 'Rp '+rupiah_totalPrice;
+                $("#total"+index).val(valTotalPrice);
+
                 } else {
-                    newVal = 0;
+                    newVal = 1;
+
                 }
                 $("#qty"+index).val(newVal);
+
+                let totalProducts = document.querySelectorAll('.hdnTotalProduct');
+                    let = total = 0;
+                    for(let i = 0; i < totalProducts.length; i++){
+                        total += (totalProducts[i].value == '') ? 0 : parseInt(totalProducts[i].value);
+                    }
+                    $("#hdnTotal").val(total);
+                    let number_string_total = total.toString(),
+                    sisa_total = number_string_total.length % 3,
+                    rupiah_total = number_string_total.substr(0, sisa_total),
+                    ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                    if(ribuan_total){
+                        separator_total = sisa_total ? '.' : '';
+                        rupiah_total += separator_total + ribuan_total.join('.');
+
+                    }
+                    let valTotal = 'Rp '+rupiah_total;
+                     $("#total").val(valTotal);
             });
 
         }
@@ -402,13 +485,63 @@
                     $(this).closest("tr").remove();
                     index -= 1
                 }
+                let totalProducts = document.querySelectorAll('.hdnTotalProduct');
+                    let = total = 0;
+                    for(let i = 0; i < totalProducts.length; i++){
+                        total += (totalProducts[i].value == '') ? 0 : parseInt(totalProducts[i].value);
+                    }
+                    $("#hdnTotal").val(total);
+                    let number_string_total = total.toString(),
+                    sisa_total = number_string_total.length % 3,
+                    rupiah_total = number_string_total.substr(0, sisa_total),
+                    ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                    if(ribuan_total){
+                        separator_total = sisa_total ? '.' : '';
+                        rupiah_total += separator_total + ribuan_total.join('.');
+
+                    }
+                    let valTotal = 'Rp '+rupiah_total;
+                     $("#total").val(valTotal);
             });
         }
         function plus(index){
             $("#btnPlus"+index).click(function() {
                 let valQty = $("#qty"+index).val();
+                let price = $("#hdnPrice"+index).val();
+                let total = $("#total").val();
                 var newVal = parseInt(valQty) + 1;
                 $("#qty"+index).val(newVal);
+                let totalPrice = parseInt(parseInt(price) * newVal);
+                $("#hdnTotalProduct"+index).val(totalPrice);
+                let number_string_totalPrice = totalPrice.toString(),
+                    sisa_totalPrice = number_string_totalPrice.length % 3,
+                    rupiah_totalPrice = number_string_totalPrice.substr(0, sisa_totalPrice),
+                    ribuan_totalPrice = number_string_totalPrice.substr(sisa_totalPrice).match(/\d{3}/g);
+                if(ribuan_totalPrice){
+                    separator_totalPrice = sisa_totalPrice ? '.' : '';
+                    rupiah_totalPrice += separator_totalPrice + ribuan_totalPrice.join('.');
+
+                }
+                let valTotalPrice = 'Rp '+rupiah_totalPrice;
+                $("#total"+index).val(valTotalPrice);
+                let totalProduct = document.querySelectorAll('.hdnTotalProduct');
+                    let = total = 0;
+                    for(let i = 0; i < totalProduct.length; i++){
+                        total += parseInt(totalProduct[i].value);
+                    }
+                    $("#hdnTotal").val(total);
+                    let number_string_total = total.toString(),
+                    sisa_total = number_string_total.length % 3,
+                    rupiah_total = number_string_total.substr(0, sisa_total),
+                    ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                    if(ribuan_total){
+                        separator_total = sisa_total ? '.' : '';
+                        rupiah_total += separator_total + ribuan_total.join('.');
+
+                    }
+                    let valTotal = 'Rp '+rupiah_total;
+                     $("#total").val(valTotal);
+
             });
         }
         function ValidateQty(index){
@@ -450,11 +583,33 @@
                     let valProdukHarga= $("#price"+indexHarga);
                     let newValProdukHarga = $(this).attr('produkHarga');
                     $("#price"+indexHarga).val(formatRupiah(newValProdukHarga), 'Rp ');
-
+                    $("#total"+indexHarga).val(formatRupiah(newValProdukHarga), 'Rp ');
+                    $("#hdnPrice"+indexHarga).val(newValProdukHarga);
+                    $("#hdnTotalProduct"+indexHarga).val(newValProdukHarga);
+                    $("#qty"+indexHarga).val('1');
+                    // let total = 0;
+                    // total += newValProdukHarga;
+                    // $("#hdnTotal").val(total);
                     let valProdukId= $("#produk_id"+indexProdukId);
                     let newValProdukId = $(this).attr('produkId');
                     $("#produk_id"+indexProdukId).val(newValProdukId);
+                    let totalProduct = document.querySelectorAll('.hdnTotalProduct');
+                    let = total = 0;
+                    for(let i = 0; i < totalProduct.length; i++){
+                        total += (totalProduct[i].value == '') ? 0 : parseInt(totalProduct[i].value);
+                    }
+                    $("#hdnTotal").val(total);
+                    let number_string_total = total.toString(),
+                    sisa_total = number_string_total.length % 3,
+                    rupiah_total = number_string_total.substr(0, sisa_total),
+                    ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                    if(ribuan_total){
+                        separator_total = sisa_total ? '.' : '';
+                        rupiah_total += separator_total + ribuan_total.join('.');
 
+                    }
+                    let valTotal = 'Rp '+rupiah_total;
+                     $("#total").val(valTotal);
                     indexProduk = 0;
                     indexHarga = 0;
                     indexProdukId = 0;
@@ -492,6 +647,8 @@
             modal(x);
         }
         }
+
+
 
         var saleAmount = document.getElementById('sale_amount');
         saleAmount.addEventListener('keyup', function(e)

@@ -166,7 +166,7 @@
                                                                                         {{-- @if ($product->qty == 0)
                                                                                             <div class="btn btn-sm" style="background-color: #e9ecef;border: 1px solid #ced4da;">Pilih</div>
                                                                                         @else --}}
-                                                                                            <div style="cursor: pointer" id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
+                                                                                            <div id="btnPilih" produkId="{{ $product->product_id }}" produkNama="{{ $product->product_name }}" produkHarga="{{ $product->product_price }}" class="btn btn-primary btn-sm">Pilih</div>
                                                                                         {{-- @endif --}}
                                                                                     </td>
                                                                                 </tr>
@@ -189,7 +189,7 @@
                                                 <div class="col-md-8">
                                                     <input type="hidden" value="" name="produk_id[]" id="produk_id1">
                                                     <input type="hidden" value="" name="sale_produk_id[]" id="sale_produk_id1">
-                                                    <input  style="width: 100%; border:1px solid #ced4da" class="form-control" type="text" value="" name="name_product[]" id="name_product1" readonly>
+                                                    <input  style="width: 170px; border:1px solid #ced4da" class="form-control" type="text" value="" name="name_product[]" id="name_product1" readonly>
                                                 </div>
                                                 <div class="col-md-2"></div>
                                             </div>
@@ -211,11 +211,34 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input style="margin-left: 50px; width:250px;" class="form-control" type="text" name="produk_price" value="" readonly id="price1" >
+                                            <input style="margin-left: 19px; width:200px;" class="form-control" type="text" name="produk_price" value="" readonly id="price1" >
+                                            <input type="hidden" name="dnPrice" id="hdnPrice1">
+                                        </td>
+                                        <td>
+                                            <input style="width:200px;margin-left: 10px;" class="form-control" type="text" name="total" readonly id="total1" >
+                                            <input type="hidden" name="dnPrice" id="hdnTotalProduct1" class="hdnTotalProduct">
                                         </td>
                                         <td>
                                             <button class="btn btn-danger btn-sm" type="button" id="btnClose1"><i class="fas fa-close"></i></button>
                                         </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid white">
+                                        <td colspan="3" align="right"  style="border-bottom: 1px solid white">Total</td>
+                                        <td  style="border-bottom: 1px solid white">
+
+
+                                                <input style="margin-left: 10px; width:200px;" id="total" type="text" disabled class="form-control" >
+                                                <input type="hidden" name="dnPrice" id="hdnTotal">
+
+
+                                        </td>
+                                        <td  style="border-bottom: 1px solid white"></td>
+                                    </tr>
+                                    <tr style="height: 10px;border-top: 1px solid white">
+                                        <td align="right" colspan="4" style="padding:0;border-top: 1px solid white">
+                                            <a id="addToSale" style="font-size:13px; color:rgb(116, 116, 240); margin-right:10px">Masukan Ke Nominal Penjualan</a>
+                                        </td>
+                                        <td  style="border-top: 1px solid white"></td>
                                     </tr>
 
                                 </tbody>
@@ -246,145 +269,277 @@
 @endsection
 @section('script')
 
-    <script>
+<script>
 
-        $("#btnAddRow").click(function() {
-            var lastRow = $('#tableProduct>tbody>tr:last');
-            var cloned = lastRow.clone();
-            cloned.find('input, select, button,.modal').each(function () {
-                var id = $(this).attr('id');
-                var regIdMatch = /^(.+)(\d+)$/;
-                var aIdParts = id.match(regIdMatch);
-                index = (parseInt(aIdParts[2],10) + 1);
-                var newId = aIdParts[1] + index;
+    $("#btnAddRow").click(function() {
+        var lastRow = $('#tableProduct>tbody>.trProduct:last');
+        var cloned = lastRow.clone();
+        cloned.find('input, select, button,.modal').each(function () {
+            var id = $(this).attr('id');
+            var regIdMatch = /^(.+)(\d+)$/;
+            var aIdParts = id.match(regIdMatch);
+            index = (parseInt(aIdParts[2],10) + 1);
+            var newId = aIdParts[1] + index;
 
-                $(this).attr('id', newId);
+            $(this).attr('id', newId);
 
-            });
-
-            cloned.find("input[type='text']").val('');
-            cloned.find("input[type='hidden']").val('');
-            cloned.find(".qty:input[type='text']").val('0');
-            cloned.insertAfter(lastRow);
-
-            minus(index);
-            plus(index);
-            close(index);
-            modal(index);
-            ValidateQty(index);
         });
-        function minus(index){
-            $("#btnMin"+index).click(function() {
-                let valQty = $("#qty"+index).val();
-                if (valQty > 0) {
-                    var newVal = valQty - 1;
-                } else {
-                    newVal = 0;
-                }
-                $("#qty"+index).val(newVal);
-            });
 
-        }
+        cloned.find("input[type='text']").val('');
+        cloned.find("input[type='hidden']").val('');
+        cloned.find(".qty:input[type='text']").val('0');
+        cloned.insertAfter(lastRow);
+        $('#qty'+index).removeAttr('name');
+        $('#qty'+index).attr("name","qty[]");
+        $('#produk_id'+index).removeAttr('name');
+        $('#produk_id'+index).attr("name","produk_id[]");
+        $('#sale_produk_id'+index).removeAttr('name');
+        $('#sale_produk_id'+index).attr("name","sale_produk_id[]");
+        minus(index);
+        plus(index);
+        close(index);
+        modal(index);
+        ValidateQty(index);
 
-        function close(index){
-            $("#tableProduct").on("click", "#btnClose"+index, function(event) {
-                var row = $('#tableProduct>tbody>tr').length;
-                if(row > 2){
-                    $(this).closest("tr").remove();
-                    index -= 1
-                }
-            });
-        }
-        function plus(index){
-            $("#btnPlus"+index).click(function() {
-                let valQty = $("#qty"+index).val();
-                var newVal = parseInt(valQty) + 1;
-                $("#qty"+index).val(newVal);
-            });
-        }
-        function ValidateQty(index){
-            $("#qty"+index).keyup(function(e)
-                                {
-            if (/\D/g.test(this.value))
-            {
-                // Filter non-digits from input value.
-                this.value = this.value.replace(/\D/g, '');
+    });
+    function minus(index){
+        $("#btnMin"+index).click(function() {
+            let valQty = $("#qty"+index).val();
+            let price = $("#hdnPrice"+index).val();
+            let totalProduct = $("#hdnTotalProduct"+index).val();
+            if (valQty > 1) {
+                var newVal = valQty - 1;
+                let totalPrice = parseInt(parseInt(totalProduct) - parseInt(price));
+            $("#hdnTotalProduct"+index).val(totalPrice);
+            let number_string_totalPrice = totalPrice.toString(),
+                sisa_totalPrice = number_string_totalPrice.length % 3,
+                rupiah_totalPrice = number_string_totalPrice.substr(0, sisa_totalPrice),
+                ribuan_totalPrice = number_string_totalPrice.substr(sisa_totalPrice).match(/\d{3}/g);
+            if(ribuan_totalPrice){
+                separator_totalPrice = sisa_totalPrice ? '.' : '';
+                rupiah_totalPrice += separator_totalPrice + ribuan_totalPrice.join('.');
+
             }
-            });
+            let valTotalPrice = 'Rp '+rupiah_totalPrice;
+            $("#total"+index).val(valTotalPrice);
+
+            } else {
+                newVal = 1;
+
+            }
+            $("#qty"+index).val(newVal);
+
+            let totalProducts = document.querySelectorAll('.hdnTotalProduct');
+                let = total = 0;
+                for(let i = 0; i < totalProducts.length; i++){
+                    total += (totalProducts[i].value == '') ? 0 : parseInt(totalProducts[i].value);
+                }
+                $("#hdnTotal").val(total);
+                let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
+
+                }
+                let valTotal = 'Rp '+rupiah_total;
+                 $("#total").val(valTotal);
+        });
+
+    }
+
+    function close(index){
+        $("#tableProduct").on("click", "#btnClose"+index, function(event) {
+            var row = $('#tableProduct>tbody>tr').length;
+            if(row > 2){
+                $(this).closest("tr").remove();
+                index -= 1
+            }
+            let totalProducts = document.querySelectorAll('.hdnTotalProduct');
+                let = total = 0;
+                for(let i = 0; i < totalProducts.length; i++){
+                    total += (totalProducts[i].value == '') ? 0 : parseInt(totalProducts[i].value);
+                }
+                $("#hdnTotal").val(total);
+                let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
+
+                }
+                let valTotal = 'Rp '+rupiah_total;
+                 $("#total").val(valTotal);
+        });
+    }
+
+
+    $("#addToSale").click(function() {
+        const total = ($('#hdnTotal').val() == '') ? 0 : $('#hdnTotal').val();
+        let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
+
+                }
+                let valTotal = 'Rp '+rupiah_total;
+        $('#sale_amount').val(valTotal);
+
+    });
+    function plus(index){
+        $("#btnPlus"+index).click(function() {
+            let valQty = $("#qty"+index).val();
+            let price = $("#hdnPrice"+index).val();
+            let total = $("#total").val();
+            var newVal = parseInt(valQty) + 1;
+            $("#qty"+index).val(newVal);
+            let totalPrice = parseInt(parseInt(price) * newVal);
+            $("#hdnTotalProduct"+index).val(totalPrice);
+            let number_string_totalPrice = totalPrice.toString(),
+                sisa_totalPrice = number_string_totalPrice.length % 3,
+                rupiah_totalPrice = number_string_totalPrice.substr(0, sisa_totalPrice),
+                ribuan_totalPrice = number_string_totalPrice.substr(sisa_totalPrice).match(/\d{3}/g);
+            if(ribuan_totalPrice){
+                separator_totalPrice = sisa_totalPrice ? '.' : '';
+                rupiah_totalPrice += separator_totalPrice + ribuan_totalPrice.join('.');
+
+            }
+            let valTotalPrice = 'Rp '+rupiah_totalPrice;
+            $("#total"+index).val(valTotalPrice);
+            let totalProduct = document.querySelectorAll('.hdnTotalProduct');
+                let = total = 0;
+                for(let i = 0; i < totalProduct.length; i++){
+                    total += parseInt(totalProduct[i].value);
+                }
+                $("#hdnTotal").val(total);
+                let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
+
+                }
+                let valTotal = 'Rp '+rupiah_total;
+                 $("#total").val(valTotal);
+
+        });
+    }
+    function ValidateQty(index){
+        $("#qty"+index).keyup(function(e)
+                            {
+        if (/\D/g.test(this.value))
+        {
+            // Filter non-digits from input value.
+            this.value = this.value.replace(/\D/g, '');
         }
-        function modal(index){
-            var btnModal = document.getElementById('btnSearch'+index);
-            var modal = document.getElementById('modal'+index);
-            btnModal.onclick = function() {
-                modal.style.display = 'block';
-                var iconCloseModal = document.getElementById('iconCloseModal'+index);
-                iconCloseModal.onclick = function() {
-                    modal.style.display = 'none';
-                }
-                var buttonCloseModal = document.getElementById('buttonCloseModal'+index);
-                buttonCloseModal.onclick = function() {
-                    modal.style.display = 'none';
-                }
-                window.onclick = function(e) {
-                    if (e.target == modal) {
-                        modal.style.display = "none";
-                    }
-                }
-                let indexProduk = index;
-                let indexHarga = index;
-                let indexProdukId = index;
-                $(document).on('click','#btnPilih',function(e){
-                    let valProdukName= $("#name_product"+indexProduk);
-                    let newValProdukName = $(this).attr('produkNama');
-                    $("#name_product"+indexProduk).val(newValProdukName);
-
-                    let valProdukHarga= $("#price"+indexHarga);
-                    let newValProdukHarga = $(this).attr('produkHarga');
-                    $("#price"+indexHarga).val(formatRupiah(newValProdukHarga), 'Rp ');
-
-                    let valProdukId= $("#produk_id"+indexProdukId);
-                    let newValProdukId = $(this).attr('produkId');
-                    $("#produk_id"+indexProdukId).val(newValProdukId);
-
-                    indexProduk = 0;
-                    indexHarga = 0;
-                    indexProdukId = 0;
+        });
+    }
+    function modal(index){
+        var btnModal = document.getElementById('btnSearch'+index);
+        var modal = document.getElementById('modal'+index);
+        btnModal.onclick = function() {
+            modal.style.display = 'block';
+            var iconCloseModal = document.getElementById('iconCloseModal'+index);
+            iconCloseModal.onclick = function() {
+                modal.style.display = 'none';
+            }
+            var buttonCloseModal = document.getElementById('buttonCloseModal'+index);
+            buttonCloseModal.onclick = function() {
+                modal.style.display = 'none';
+            }
+            window.onclick = function(e) {
+                if (e.target == modal) {
                     modal.style.display = "none";
-                });
+                }
             }
+            let indexProduk = index;
+            let indexHarga = index;
+            let indexProdukId = index;
+            $(document).on('click','#btnPilih',function(e){
+                let valProdukName= $("#name_product"+indexProduk);
+                let newValProdukName = $(this).attr('produkNama');
+                $("#name_product"+indexProduk).val(newValProdukName);
+
+                let valProdukHarga= $("#price"+indexHarga);
+                let newValProdukHarga = $(this).attr('produkHarga');
+                $("#price"+indexHarga).val(formatRupiah(newValProdukHarga), 'Rp ');
+                $("#total"+indexHarga).val(formatRupiah(newValProdukHarga), 'Rp ');
+                $("#hdnPrice"+indexHarga).val(newValProdukHarga);
+                $("#hdnTotalProduct"+indexHarga).val(newValProdukHarga);
+                $("#qty"+indexHarga).val('1');
+                // let total = 0;
+                // total += newValProdukHarga;
+                // $("#hdnTotal").val(total);
+                let valProdukId= $("#produk_id"+indexProdukId);
+                let newValProdukId = $(this).attr('produkId');
+                $("#produk_id"+indexProdukId).val(newValProdukId);
+                let totalProduct = document.querySelectorAll('.hdnTotalProduct');
+                let = total = 0;
+                for(let i = 0; i < totalProduct.length; i++){
+                    total += (totalProduct[i].value == '') ? 0 : parseInt(totalProduct[i].value);
+                }
+                $("#hdnTotal").val(total);
+                let number_string_total = total.toString(),
+                sisa_total = number_string_total.length % 3,
+                rupiah_total = number_string_total.substr(0, sisa_total),
+                ribuan_total = number_string_total.substr(sisa_total).match(/\d{3}/g);
+                if(ribuan_total){
+                    separator_total = sisa_total ? '.' : '';
+                    rupiah_total += separator_total + ribuan_total.join('.');
+
+                }
+                let valTotal = 'Rp '+rupiah_total;
+                 $("#total").val(valTotal);
+                indexProduk = 0;
+                indexHarga = 0;
+                indexProdukId = 0;
+                modal.style.display = "none";
+            });
         }
-        function formatRupiah(number, prefix)
-        {
-            var number_string = number.replace(/[^,\d]/g, '').toString(),
-                split    = number_string.split(','),
-                sisa     = split[0].length % 3,
-                rupiah     = split[0].substr(0, sisa),
-                ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
+    }
+    function formatRupiah(number, prefix)
+    {
+        var number_string = number.replace(/[^,\d]/g, '').toString(),
+            split    = number_string.split(','),
+            sisa     = split[0].length % 3,
+            rupiah     = split[0].substr(0, sisa),
+            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
         }
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
+    }
 
-            ValidateQty(1);
-            minus(1);
-            plus(1);
-            close(1);
-            modal(1);
+        ValidateQty(1);
+        minus(1);
+        plus(1);
+        close(1);
+        modal(1);
 
 
-        var saleAmount = document.getElementById('sale_amount');
-        saleAmount.addEventListener('keyup', function(e)
-        {
-            saleAmount.value = formatRupiah(this.value, 'Rp ');
-        });
-        var expenseAmount = document.getElementById('expense_amount');
-        expenseAmount.addEventListener('keyup', function(e)
-        {
-            expenseAmount.value = formatRupiah(this.value, 'Rp ');
-        });
-    </script>
+
+
+    var saleAmount = document.getElementById('sale_amount');
+    saleAmount.addEventListener('keyup', function(e)
+    {
+        saleAmount.value = formatRupiah(this.value, 'Rp ');
+    });
+    var expenseAmount = document.getElementById('expense_amount');
+    expenseAmount.addEventListener('keyup', function(e)
+    {
+        expenseAmount.value = formatRupiah(this.value, 'Rp ');
+    });
+</script>
 @endsection
 
