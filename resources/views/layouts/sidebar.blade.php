@@ -23,6 +23,11 @@
                     </i><i class="fas fa-file-alt align-middle"></i> <span class="align-middle">Transaksi</span>
                 </a>
             </li>
+            <li class="sidebar-item {{ Request::is('hutang') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ url('hutang') }}">
+                    <i class="fa-solid fa-file-pen"></i> <span class="align-middle">Hutang</span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
