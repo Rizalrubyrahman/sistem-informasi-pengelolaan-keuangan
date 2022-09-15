@@ -137,6 +137,17 @@
 @endsection
 @section('script')
 <script>
+    function addCommas(nStr) {
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    let rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return 'Rp '+x1 + x2;
+}
     document.addEventListener("DOMContentLoaded", function() {
         var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
         var gradient = ctx.createLinearGradient(0, 0, 0, 225);
@@ -148,7 +159,7 @@
             data: {
                 labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
-                    label: "Sales ($)",
+                    label: "Keuntungan",
                     fill: true,
                     backgroundColor: gradient,
                     borderColor: "rgba(87,186,171,255)",
@@ -174,14 +185,18 @@
                 scales: {
                     xAxes: [{
                         reverse: true,
+
                         gridLines: {
                             color: "rgba(0,0,0,0.0)"
                         }
                     }],
                     yAxes: [{
                         ticks: {
-                            stepSize: 1000
-                        },
+                fontSize: 10,
+                callback: function (value, index, values) {
+                    return addCommas(value); //! panggil function addComas tadi disini
+                }
+            },
                         display: true,
                         borderDash: [3, 3],
                         gridLines: {
