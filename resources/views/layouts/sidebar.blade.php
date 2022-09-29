@@ -20,7 +20,7 @@
             </li>
             <li class="sidebar-item {{ Request::is('transaksi') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ url('transaksi') }}">
-                    </i><i class="fas fa-file-alt align-middle"></i> <span class="align-middle">Transaksi</span>
+                    <i class="fas fa-file-alt align-middle"></i> <span class="align-middle">Transaksi</span>
                 </a>
             </li>
             <li class="sidebar-item {{ Request::is('hutang') ? 'active' : '' }}">

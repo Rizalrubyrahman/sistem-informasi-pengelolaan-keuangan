@@ -16,12 +16,12 @@ class CreateAccountPaylablesTable extends Migration
         Schema::create('account_paylables', function (Blueprint $table) {
             $table->id('account_paylable_id');
             $table->string('debt');
-            $table->string('pay');
+            $table->string('pay')->nullable();
             $table->string('customer_name');
             $table->string('customer_telp');
             $table->date('debt_date');
-            $table->date('due_date');
-            $table->string('note');
+            $table->date('due_date')->nullable();
+            $table->string('note')->nullable();
             $table->string('status');
             $table->timestamps();
         });

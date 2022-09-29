@@ -47,3 +47,20 @@ Route::prefix('transaksi')->group(function () {
     Route::post('export_excel', 'TransactionController@exportExcel');
     Route::get('export_pdf', 'TransactionController@ExportPDF');
 });
+Route::prefix('hutang')->group(function () {
+    Route::get('/','AccountPaylableController@debtView');
+    Route::get('tambah','AccountPaylableController@debtInput');
+    // Route::post('tambah','TransactionController@transactionStore');
+    // Route::get('cari','TransactionController@transactionSearch');
+    // Route::get('cari_list','TransactionController@transactionSearchList');
+    // Route::get('filter','TransactionController@transactionFilter');
+    // Route::get('sort_by','TransactionController@transactionSortBy');
+    // Route::get('sort_by_date','TransactionController@transactionSortByDate');
+    // Route::get('sort_by_date_sum','TransactionController@transactionSortByDateSum');
+    // Route::get('detail/{transactionId}', 'TransactionController@transactionDetail');
+    // Route::get('ubah/{transactionId}', 'TransactionController@transactionEdit');
+    // Route::post('ubah/{transactionId}', 'TransactionController@transactionUpdate');
+    // Route::post('hapus/{transactionId}', 'TransactionController@transactionDelete');
+    // Route::post('export_excel', 'TransactionController@exportExcel');
+    // Route::get('export_pdf', 'TransactionController@ExportPDF');
+});
