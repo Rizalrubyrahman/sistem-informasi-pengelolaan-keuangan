@@ -31,7 +31,7 @@ Route::prefix('produk')->group(function () {
     Route::post('hapus/{productId}', 'ProductController@productDelete');
 });
 Route::prefix('transaksi')->group(function () {
-    Route::get('/','TransactionController@transactionView');
+    Route::get('/','AccountPaylableController@transactionView');
     Route::get('tambah','TransactionController@transactionInput');
     Route::post('tambah','TransactionController@transactionStore');
     Route::get('cari','TransactionController@transactionSearch');
@@ -50,17 +50,17 @@ Route::prefix('transaksi')->group(function () {
 Route::prefix('hutang')->group(function () {
     Route::get('/','AccountPaylableController@debtView');
     Route::get('tambah','AccountPaylableController@debtInput');
-    // Route::post('tambah','TransactionController@transactionStore');
-    // Route::get('cari','TransactionController@transactionSearch');
-    // Route::get('cari_list','TransactionController@transactionSearchList');
-    // Route::get('filter','TransactionController@transactionFilter');
-    // Route::get('sort_by','TransactionController@transactionSortBy');
-    // Route::get('sort_by_date','TransactionController@transactionSortByDate');
-    // Route::get('sort_by_date_sum','TransactionController@transactionSortByDateSum');
-    // Route::get('detail/{transactionId}', 'TransactionController@transactionDetail');
-    // Route::get('ubah/{transactionId}', 'TransactionController@transactionEdit');
-    // Route::post('ubah/{transactionId}', 'TransactionController@transactionUpdate');
-    // Route::post('hapus/{transactionId}', 'TransactionController@transactionDelete');
-    // Route::post('export_excel', 'TransactionController@exportExcel');
-    // Route::get('export_pdf', 'TransactionController@ExportPDF');
+    Route::post('tambah','AccountPaylableController@debtStore');
+    // Route::get('cari','AccountPaylableController@debtSearch');
+    // Route::get('cari_list','AccountPaylableController@debtSearchList');
+    // Route::get('filter','AccountPaylableController@debtFilter');
+    // Route::get('sort_by','AccountPaylableController@debtSortBy');
+    // Route::get('sort_by_date','AccountPaylableController@debtSortByDate');
+    // Route::get('sort_by_date_sum','AccountPaylableController@debtSortByDateSum');
+    // Route::get('detail/{debtId}', 'AccountPaylableController@debtDetail');
+    // Route::get('ubah/{debtId}', 'AccountPaylableController@debtEdit');
+    // Route::post('ubah/{debtId}', 'AccountPaylableController@debtUpdate');
+    // Route::post('hapus/{debtId}', 'AccountPaylableController@debtDelete');
+    // Route::post('export_excel', 'AccountPaylableController@exportExcel');
+    // Route::get('export_pdf', 'AccountPaylableController@ExportPDF');
 });

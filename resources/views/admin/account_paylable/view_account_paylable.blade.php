@@ -62,7 +62,7 @@
     </style>
 @endsection
 @section('content')
-<h1 class="h3 mb-3"><strong>Hutang</strong> </h1>
+<h1 class="h3 mb-3"><strong>Piutang</strong> </h1>
 <div class="card shadow" style="border-radius: 15px">
     <div class="card-body">
         <div class="row">

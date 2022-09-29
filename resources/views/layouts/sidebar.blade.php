@@ -25,7 +25,7 @@
             </li>
             <li class="sidebar-item {{ Request::is('hutang') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ url('hutang') }}">
-                    <i class="fa-solid fa-file-pen"></i> <span class="align-middle">Hutang</span>
+                    <i class="fa-solid fa-file-pen"></i> <span class="align-middle">Piutang</span>
                 </a>
             </li>
         </ul>

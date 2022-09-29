@@ -27,8 +27,39 @@ class AccountPaylableController extends Controller
     }
     public function debtInput()
     {
+        return view('admin.account_paylable.input_account_paylable',compact([]));
 
-        return view('admin.account_paylable.sale.input_account_paylable',compact(['saleChannels','paymentMethods','products']));
+    }
+    public function debtStore(Request $request){
+        $debtAmount = filter_var($request->debt_amount, FILTER_SANITIZE_NUMBER_INT);
+        $messages = [
+            'debt_date.required' => 'Tanggal harus diisi.',
+            'debt_amount.required' => 'Nominal harus diisi.',
+            'customer_name.required' => 'Nama Pelanggan harus diisi.',
+        ];
+        $validate = Validator::make($request->all(),[
+            'debt_date' => 'required',
+            'debt_amount' => 'required',
+            'customer_name' => 'required',
+        ],$messages);
+        if($validate->passes())
+        {
+                $newAccountPaylable = new AccountPaylable;
+                $newAccountPaylable->debt = $debtAmount;
+                $newAccountPaylable->pay = null;
+                $newAccountPaylable->customer_name = $request->customer_name;
+                $newAccountPaylable->customer_telp =  $request->telp;
+                $newAccountPaylable->debt_date = $request->debt_date;
+                $newAccountPaylable->due_date = $request->due_date;
+                $newAccountPaylable->note = $request->note;
+                $newAccountPaylable->status = 'Belum Lunas';
+                $newAccountPaylable->save();
 
+
+            Alert::success('Berhasil', 'Piutang berhasil disimpan.');
+            return redirect('hutang');
+        }
+        Alert::error('Gagal', 'Piutang gagal disimpan.');
+        return redirect()->back()->withErrors($validate)->withInput();
     }
 }
