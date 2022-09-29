@@ -22,7 +22,7 @@ class AccountPaylableController extends Controller
     public function debtView()
     {
 
-        $accountPaylables = AccountPaylable::orderBy('debt_date')->paginate(10);
+        $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->paginate(10);
         return view('admin.account_paylable.view_account_paylable',compact(['accountPaylables']));
     }
     public function debtInput()
@@ -61,5 +61,46 @@ class AccountPaylableController extends Controller
         }
         Alert::error('Gagal', 'Piutang gagal disimpan.');
         return redirect()->back()->withErrors($validate)->withInput();
+    }
+    public function debtSearch(Request $request)
+    {
+        if ($request->search == null) {
+            $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->get();
+        } else {
+            $accountPaylables=AccountPaylable::where('customer_name','LIKE','%'.$request->search."%")->get();
+        }
+
+
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+
+    }
+    public function debtSortBy(Request $request)
+    {
+        if($request->search == 1){
+            $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->paginate(10);
+        }else if($request->search == 2){
+            $accountPaylables = AccountPaylable::orderBy('debt_date','ASC')->paginate(10);
+
+        }else {
+            $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->paginate(10);
+        }
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+
+    }
+    public function debtSortByDate(Request $request)
+    {
+        $debtDate = Carbon::parse($request->debtDate)->format('Y-m-d');
+        if($request->debtDate != null){
+            $accountPaylables = AccountPaylable::orderBy('debt_date','Desc')->where('debt_date',$debtDate)->get();
+        }else {
+            $accountPaylables = AccountPaylable::orderBy('debt_date','Desc')->get();
+        }
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+
+    }
+
+    public function debtDetail($apId){
+        $accountPaylable = AccountPaylable::find($apId);
+        return view('admin.account_paylable.detail_account_paylable',compact(['accountPaylable']));
     }
 }

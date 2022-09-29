@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Hutang')
+@section('title','Piutang')
 @php
     $sumPay = 0;
     $sumDebt = 0;
@@ -119,7 +119,15 @@
             @csrf
         <div class="row">
             <div class="col-md-6 mt-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="debtDate" id="debtDate" value="" class="datepicker form-control">
+                        </div>
+                    </div>
 
+                </div>
 
             </div>
             <div class="col-md-6 mt-3">
@@ -127,7 +135,7 @@
                     <div class="form-group">
                         <label>&nbsp;</label>
                         <div class="input-group" >
-                            <input type="text" class="form-control" onkeyup="showIconClear(this)" style="border-right:0px;border-color: #1cbb8c" placeholder="Cari hutang" aria-label="Cari barang" id="transactionSearch" aria-describedby="button-addon2">
+                            <input type="text" class="form-control" onkeyup="showIconClear(this)" style="border-right:0px;border-color: #1cbb8c" placeholder="Cari Nama Pelanggan" aria-label="Cari barang" id="cari_piutang" aria-describedby="button-addon2">
                             <button class="btn" style="border-left:0px;border-color: #1cbb8c" type="button" id="btnClear"><span id="clear" style="display: none;"><i class="fa-solid fa-xmark"></i></span></button>
                         </div>
                     </div>
@@ -163,10 +171,10 @@
                     @foreach ($accountPaylables as $ap)
                         <tr>
                             <td align="center">
-                                    <span>{{ $ap->debt_date }}</span>
+                                    <span>{{ \Carbon\Carbon::parse($ap->debt_date)->format('d-m-Y') }}</span>
                             </td>
                             <td align="center">
-                                <span>{{ $ap->due_date }}</span>
+                                <span>{{ \Carbon\Carbon::parse($ap->due_date)->format('d-m-Y') }}</span>
                             </td>
 
                             <td>
@@ -200,18 +208,18 @@
                             </td>
                             <td align="center">
                                 @if ($ap->status == 'Lunas')
-                                <div style="background-color: #2ab284;color:white;border-radius:0px 100px 100px 0px;padding:1px;">{{ $ap->status }}</div>
+                                <div style="background-color: #2ab284;color:white;border-radius:5px;padding:1px;">{{ $ap->status }}</div>
                                 @else
-                                <div style="background-color: #dc4e4d;color:white;border-radius:0px 100px 100px 0px;padding:1px;">{{ $ap->status }}</div>
+                                <div style="background-color: #dc4e4d;color:white;border-radius:5px;padding:1px;">{{ $ap->status }}</div>
                                 @endif
                             </td>
                             <td align="center">
-                                <a href="" class="btn btn-sm btn-primary"><i class="fas fa-file-alt align-middle"></i></a>
+                                <a href="{{ url('/hutang/detail/'.$ap->account_paylable_id) }}" class="btn btn-sm btn-primary" style="border-radius: 3px"><i class="fas fa-file-alt align-middle"></i></a>
                             </td>
                         </tr>
                     @endforeach
                 @else
-                     <th colspan="4">Tidak ada Hutang</th>
+                     <th colspan="4">Tidak ada Piutang</th>
                 @endif
             </tbody>
         </table>
@@ -277,30 +285,8 @@
     </script>
     <script type="text/javascript">
 
-        $('#transactionSearch').on('keyup',function(){
-            $value=$(this).val();
-            $.ajax({
-                    type : 'get',
-                    url : '{{url("/hutang/cari")}}',
-                    data:{'search':$value},
-                    success:function(data){
-                        $('#list').html(data);
-                    }
-            });
 
-        })
-        $('#filter').on('change',function(){
-            $value=$(this).val();
-            $.ajax({
-                    type : 'get',
-                    url : '{{url("/hutang/filter")}}',
-                    data:{'search':$value},
-                    success:function(data){
-                        $('#list').html(data);
-                    }
-            });
 
-        })
         $('#sortBy').on('change',function(){
             $value=$(this).val();
             $.ajax({
@@ -313,90 +299,22 @@
             });
 
         })
-        function loadDataFromDate(){
-            $toDate=$('#toDate').val();
-            $fromDate=$('#fromDate').val();
+        function loadDataDate(){
+            $debtDate=$('#debtDate').val();
             $.ajax({
                     type : 'get',
                     url : '{{url("/hutang/sort_by_date")}}',
-                    data:{'fromDate':$fromDate,'toDate':$toDate},
+                    data:{'debtDate':$debtDate},
                     success:function(data){
                         $('#list').html(data);
                     }
             });
         }
 
-        $('#fromDate,#toDate').on('change',function(){
-            loadDataFromDate();
+        $('#debtDate').on('change',function(){
+            loadDataDate();
         })
-        $('#fromDate,#toDate').on('change',function(){
-            $toDate=$('#toDate').val();
-            $fromDate=$('#fromDate').val();
-            $.ajax({
-                    type : 'get',
-                    url : '{{url("/hutang/sort_by_date_sum")}}',
-                    data:{'fromDate':$fromDate,'toDate':$toDate},
-                    success:function(data){
-                        let saleAmount = 0;
-                        let expenseAmount = 0;
 
-                        for (let i = 0; i < data.data.length; i++) {
-                            saleAmount += (data.data[i]['sale_amount'] == null) ? 0 : parseInt(data.data[i]['sale_amount']);
-                            expenseAmount += (data.data[i]['expense_amount'] == null) ? 0 : parseInt(data.data[i]['expense_amount']);
-
-                        }
-                        let number_string_saleAmount = saleAmount.toString(),
-                            sisa_saleAmount = number_string_saleAmount.length % 3,
-                            rupiah_saleAmount = number_string_saleAmount.substr(0, sisa_saleAmount),
-                            ribuan_saleAmount = number_string_saleAmount.substr(sisa_saleAmount).match(/\d{3}/g);
-
-                        if(ribuan_saleAmount){
-                            separator_saleAmount = sisa_saleAmount ? '.' : '';
-                            rupiah_saleAmount += separator_saleAmount + ribuan_saleAmount.join('.');
-                        }
-
-                        let number_string_expenseAmount = expenseAmount.toString(),
-                            sisa_expenseAmount = number_string_expenseAmount.length % 3,
-                            rupiah_expenseAmount = number_string_expenseAmount.substr(0, sisa_expenseAmount),
-                            ribuan_expenseAmount = number_string_expenseAmount.substr(sisa_expenseAmount).match(/\d{3}/g);
-
-                        if(ribuan_expenseAmount){
-                            separator_expenseAmount = sisa_expenseAmount ? '.' : '';
-                            rupiah_expenseAmount += separator_expenseAmount + ribuan_expenseAmount.join('.');
-                        }
-                        let profitAmount = saleAmount - expenseAmount;
-                        let number_string_profitAmount = profitAmount.toString(),
-                            sisa_profitAmount = number_string_profitAmount.length % 3,
-                            rupiah_profitAmount = number_string_profitAmount.substr(0, sisa_profitAmount),
-                            ribuan_profitAmount = number_string_profitAmount.substr(sisa_profitAmount).match(/\d{1,3}/g);
-
-                        if(ribuan_profitAmount){
-                            separator_profitAmount = sisa_profitAmount ? '.' : '';
-                            rupiah_profitAmount += ribuan_profitAmount.join('.');
-                        }
-
-                        if(profitAmount > 0){
-                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount).css("color","#2ab284");
-                            $('#textKeuntungan').css("color","#2ab284");
-                        }else if(profitAmount < 0){
-                            $('#spanKeuntungan').text('Rp -'+rupiah_profitAmount).css("color","#dc4e4d");
-                            $('#textKeuntungan').css("color","#dc4e4d");
-                        }else{
-                            $('#spanKeuntungan').text('Rp '+rupiah_profitAmount);
-                        }
-                        if(expenseAmount > 0){
-                            $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount).css("color","#dc4e4d");
-                        }else{
-                            $('#spanPengeluaran').text('Rp '+rupiah_expenseAmount);
-                        }
-                        if(saleAmount > 0){
-                            $('#spanPenjualan').text('Rp '+rupiah_saleAmount).css("color","#2ab284");
-                        }else{
-                            $('#spanPenjualan').text('Rp '+rupiah_saleAmount);
-                        }
-                    }
-            });
-        })
         $('#btnExportExcel').on('click',function(){
             $toDate=$('#toDate').val();
             $fromDate=$('#fromDate').val();
@@ -424,8 +342,21 @@
             });
         })
 
+
+        $('#cari_piutang').on('keyup',function(){
+            $value=$(this).val();
+            $.ajax({
+                    type : 'get',
+                    url : '{{url("/hutang/cari")}}',
+                    data:{'search':$value},
+                    success:function(data){
+                        $('#list').html(data);
+                    }
+            });
+
+        });
         $('#btnClear').on('click',function(){
-                $value = $('#transactionSearch').val('');
+                $value = $('#cari_piutang').val('');
                 $("#clear").css("display", "none");
                 $.ajax({
                     type : 'get',
@@ -436,7 +367,6 @@
                     }
             });
         });
-
     </script>
 
 @endsection

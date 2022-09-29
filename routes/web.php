@@ -51,13 +51,10 @@ Route::prefix('hutang')->group(function () {
     Route::get('/','AccountPaylableController@debtView');
     Route::get('tambah','AccountPaylableController@debtInput');
     Route::post('tambah','AccountPaylableController@debtStore');
-    // Route::get('cari','AccountPaylableController@debtSearch');
-    // Route::get('cari_list','AccountPaylableController@debtSearchList');
-    // Route::get('filter','AccountPaylableController@debtFilter');
-    // Route::get('sort_by','AccountPaylableController@debtSortBy');
-    // Route::get('sort_by_date','AccountPaylableController@debtSortByDate');
-    // Route::get('sort_by_date_sum','AccountPaylableController@debtSortByDateSum');
-    // Route::get('detail/{debtId}', 'AccountPaylableController@debtDetail');
+    Route::get('cari','AccountPaylableController@debtSearch');
+    Route::get('sort_by','AccountPaylableController@debtSortBy');
+    Route::get('sort_by_date','AccountPaylableController@debtSortByDate');
+    Route::get('detail/{apId}', 'AccountPaylableController@debtDetail');
     // Route::get('ubah/{debtId}', 'AccountPaylableController@debtEdit');
     // Route::post('ubah/{debtId}', 'AccountPaylableController@debtUpdate');
     // Route::post('hapus/{debtId}', 'AccountPaylableController@debtDelete');
