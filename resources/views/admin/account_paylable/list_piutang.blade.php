@@ -1,12 +1,11 @@
-
-                @if ( $accountPaylables->count() > 0)
+@if ( $accountPaylables->count() > 0)
                     @foreach ($accountPaylables as $ap)
                         <tr>
                             <td align="center">
                                     <span>{{ \Carbon\Carbon::parse($ap->debt_date)->format('d-m-Y') }}</span>
                             </td>
                             <td align="center">
-                                <span>{{ Carbon\Carbon::parse($ap->due_date)->format('d-m-Y') }}</span>
+                                <span>{{ ($ap->due_date == null) ? '-' : \Carbon\Carbon::parse($ap->due_date)->format('d-m-Y') }}</span>
                             </td>
 
                             <td>
@@ -21,21 +20,21 @@
                                 @endif
                             </td>
                             <td align="center">
-                                @if ($ap->pay == 0 || $ap->pay == null)
+                                @if (array_sum($totalBayar[$ap->account_paylable_id]) == 0)
                                     -
                                 @else
-                                    <span style="color:#2ab284">Rp {{ number_format($ap->pay, 0, ",", ".") }}</span>
+                                    <span style="color:#2ab284">Rp {{ number_format(array_sum($totalBayar[$ap->account_paylable_id]), 0, ",", ".") }}</span>
                                 @endif
                             </td>
                             <td align="center">
                                 @php
-                                    $payCustomer = ($ap->pay == null) ? 0 : $ap->pay;
+                                    $payCustomer = (array_sum($totalBayar[$ap->account_paylable_id]) == 0) ? 0 : array_sum($totalBayar[$ap->account_paylable_id]);
                                 @endphp
 
                                 @if($ap->debt > $payCustomer)
                                     <span style="color:#dc4e4d">Rp {{ number_format(($ap->debt - $payCustomer), 0, ",", ".") }}</span>
-                                @elseif($ap->debt == $ap->pay)
-                                    0
+                                @elseif($ap->debt == array_sum($totalBayar[$ap->account_paylable_id]))
+                                    Rp 0
                                 @endif
                             </td>
                             <td align="center">

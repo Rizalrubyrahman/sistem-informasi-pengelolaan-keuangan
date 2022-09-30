@@ -70,10 +70,10 @@
                 <table class="table" style="border: 2px solid #dee2e6; width:100%;">
                     <tr>
                         <td align="center" style="border: 2px solid #dee2e6;">
-                            @if ($sumPay == 0 || $sumPay == null)
+                            @if (array_sum($allTotalBayar) == 0 || array_sum($allTotalBayar) == null)
                                 <span id="spanPenjualan">-</span>
                             @else
-                                <span id="spanPenjualan" style="color:#2ab284">Rp {{ number_format($sumPay, 0, ",", ".") }}</span>
+                                <span id="spanPenjualan" style="color:#2ab284">Rp {{ number_format(array_sum($allTotalBayar), 0, ",", ".") }}</span>
                             @endif
                             <br>
                             <span style="font-size: 9pt">Sudah Bayar</span>
@@ -96,10 +96,10 @@
                                     <div class="d-flex justify-content-between">
                                         Sisa Hutang
 
-                                        @if ($sumDebt == $sumPay)
+                                        @if ($sumDebt == array_sum($allTotalBayar))
                                             <span id="spanPengeluaran">-</span>
                                         @else
-                                            <span style="color:#dc4e4d" id="spanPengeluaran"> Rp {{ number_format($sumDebt - $sumPay, 0, ",", ".") }}</span>
+                                            <span style="color:#dc4e4d" id="spanPengeluaran"> Rp {{ number_format($sumDebt - array_sum($allTotalBayar), 0, ",", ".") }}</span>
                                         @endif
                                     </div>
 
@@ -112,7 +112,7 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-12">
-                <a href="{{ url('/hutang/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Transaksi</a>
+                <a href="{{ url('/hutang/tambah') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Piutang</a>
             </div>
         </div>
         <form action="{{ url('/hutang/export_pdf') }}" method="get">
@@ -174,7 +174,7 @@
                                     <span>{{ \Carbon\Carbon::parse($ap->debt_date)->format('d-m-Y') }}</span>
                             </td>
                             <td align="center">
-                                <span>{{ \Carbon\Carbon::parse($ap->due_date)->format('d-m-Y') }}</span>
+                                <span>{{ ($ap->due_date == null) ? '-' : \Carbon\Carbon::parse($ap->due_date)->format('d-m-Y') }}</span>
                             </td>
 
                             <td>
@@ -189,21 +189,21 @@
                                 @endif
                             </td>
                             <td align="center">
-                                @if ($ap->pay == 0 || $ap->pay == null)
+                                @if (array_sum($totalBayar[$ap->account_paylable_id]) == 0)
                                     -
                                 @else
-                                    <span style="color:#2ab284">Rp {{ number_format($ap->pay, 0, ",", ".") }}</span>
+                                    <span style="color:#2ab284">Rp {{ number_format(array_sum($totalBayar[$ap->account_paylable_id]), 0, ",", ".") }}</span>
                                 @endif
                             </td>
                             <td align="center">
                                 @php
-                                    $payCustomer = ($ap->pay == null) ? 0 : $ap->pay;
+                                    $payCustomer = (array_sum($totalBayar[$ap->account_paylable_id]) == 0) ? 0 : array_sum($totalBayar[$ap->account_paylable_id]);
                                 @endphp
 
                                 @if($ap->debt > $payCustomer)
                                     <span style="color:#dc4e4d">Rp {{ number_format(($ap->debt - $payCustomer), 0, ",", ".") }}</span>
-                                @elseif($ap->debt == $ap->pay)
-                                    0
+                                @elseif($ap->debt == array_sum($totalBayar[$ap->account_paylable_id]))
+                                    Rp 0
                                 @endif
                             </td>
                             <td align="center">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\AccountPaylable;
+use App\AccountPaylableDetail;
 use Alert,Validator,PDF;
 use Carbon\Carbon;
 
@@ -21,9 +22,18 @@ class AccountPaylableController extends Controller
      */
     public function debtView()
     {
-
         $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->paginate(10);
-        return view('admin.account_paylable.view_account_paylable',compact(['accountPaylables']));
+        $accountPaylableDetails = AccountPaylableDetail::all();
+        foreach($accountPaylables as $ap){
+            foreach($accountPaylableDetails as $apd){
+                $totalBayar[$ap->account_paylable_id][] = ($ap->account_paylable_id == $apd->account_paylable_id) ? $apd->pay_amount : 0;
+
+            }
+        }
+        foreach($accountPaylableDetails as $apd){
+            $allTotalBayar[] = $apd->pay_amount;
+        }
+        return view('admin.account_paylable.view_account_paylable',compact(['accountPaylables','totalBayar','accountPaylableDetails','allTotalBayar']));
     }
     public function debtInput()
     {
@@ -69,9 +79,18 @@ class AccountPaylableController extends Controller
         } else {
             $accountPaylables=AccountPaylable::where('customer_name','LIKE','%'.$request->search."%")->get();
         }
+        $accountPaylableDetails = AccountPaylableDetail::all();
+        foreach($accountPaylables as $ap){
+            foreach($accountPaylableDetails as $apd){
+                $totalBayar[$ap->account_paylable_id][] = ($ap->account_paylable_id == $apd->account_paylable_id) ? $apd->pay_amount : 0;
 
+            }
+        }
+        foreach($accountPaylableDetails as $apd){
+            $allTotalBayar[] = $apd->pay_amount;
+        }
 
-        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables','totalBayar','accountPaylableDetails','allTotalBayar']));
 
     }
     public function debtSortBy(Request $request)
@@ -84,7 +103,17 @@ class AccountPaylableController extends Controller
         }else {
             $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->paginate(10);
         }
-        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+        $accountPaylableDetails = AccountPaylableDetail::all();
+        foreach($accountPaylables as $ap){
+            foreach($accountPaylableDetails as $apd){
+                $totalBayar[$ap->account_paylable_id][] = ($ap->account_paylable_id == $apd->account_paylable_id) ? $apd->pay_amount : 0;
+
+            }
+        }
+        foreach($accountPaylableDetails as $apd){
+            $allTotalBayar[] = $apd->pay_amount;
+        }
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables','totalBayar','accountPaylableDetails','allTotalBayar']));
 
     }
     public function debtSortByDate(Request $request)
@@ -95,12 +124,57 @@ class AccountPaylableController extends Controller
         }else {
             $accountPaylables = AccountPaylable::orderBy('debt_date','Desc')->get();
         }
-        return view('admin.account_paylable.list_piutang',compact(['accountPaylables']));
+        $accountPaylableDetails = AccountPaylableDetail::all();
+        foreach($accountPaylables as $ap){
+            foreach($accountPaylableDetails as $apd){
+                $totalBayar[$ap->account_paylable_id][] = ($ap->account_paylable_id == $apd->account_paylable_id) ? $apd->pay_amount : 0;
+
+            }
+        }
+        foreach($accountPaylableDetails as $apd){
+            $allTotalBayar[] = $apd->pay_amount;
+        }
+        return view('admin.account_paylable.list_piutang',compact(['accountPaylables','totalBayar','accountPaylableDetails','allTotalBayar']));
 
     }
 
     public function debtDetail($apId){
         $accountPaylable = AccountPaylable::find($apId);
-        return view('admin.account_paylable.detail_account_paylable',compact(['accountPaylable']));
+        $accountPaylableDetails = AccountPaylableDetail::where('account_paylable_id',$apId)->get();
+        return view('admin.account_paylable.detail_account_paylable',compact(['accountPaylable','accountPaylableDetails']));
+    }
+    public function debtTandaiLunas($apId)
+    {
+        $accountPaylable = AccountPaylable::find($apId);
+        $accountPaylable->status = 'Lunas';
+        $accountPaylable->save();
+
+        $newAccountPaylableDetail = new AccountPaylableDetail;
+        $newAccountPaylableDetail->account_paylable_id = $apId;
+        $newAccountPaylableDetail->pay_amount = $accountPaylable->debt;
+        $newAccountPaylableDetail->pay_date = Carbon::now();
+        $newAccountPaylableDetail->save();
+        Alert::success('Berhasil', 'Piutang Telah Lunas.');
+        return redirect('hutang');
+    }
+    public function debtAturTanggal($apId,Request $request)
+    {
+        $accountPaylable = AccountPaylable::find($apId);
+        $accountPaylable->due_date = $request->due_date;
+        $accountPaylable->save();
+        Alert::success('Berhasil', 'Tanggal Jatuh tempo telah diubah.');
+        return redirect()->back();
+    }
+
+    public function debtPay($apId,Request $request)
+    {
+        $payAmount = filter_var($request->pay_amount, FILTER_SANITIZE_NUMBER_INT);
+        $newAccountPaylableDetail = new AccountPaylableDetail;
+        $newAccountPaylableDetail->account_paylable_id = $apId;
+        $newAccountPaylableDetail->pay_amount = $payAmount;
+        $newAccountPaylableDetail->pay_date = $request->pay_date;
+        $newAccountPaylableDetail->save();
+        Alert::success('Berhasil', 'Catatan hutang berhasil dibuat.');
+        return redirect()->back();
     }
 }

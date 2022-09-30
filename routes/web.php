@@ -55,9 +55,9 @@ Route::prefix('hutang')->group(function () {
     Route::get('sort_by','AccountPaylableController@debtSortBy');
     Route::get('sort_by_date','AccountPaylableController@debtSortByDate');
     Route::get('detail/{apId}', 'AccountPaylableController@debtDetail');
-    // Route::get('ubah/{debtId}', 'AccountPaylableController@debtEdit');
-    // Route::post('ubah/{debtId}', 'AccountPaylableController@debtUpdate');
-    // Route::post('hapus/{debtId}', 'AccountPaylableController@debtDelete');
+    Route::post('tandai_lunas/{apId}', 'AccountPaylableController@debtTandaiLunas');
+    Route::post('atur_tanggal/{apId}', 'AccountPaylableController@debtAturTanggal');
+    Route::post('bayar/{apId}', 'AccountPaylableController@debtPay');
     // Route::post('export_excel', 'AccountPaylableController@exportExcel');
     // Route::get('export_pdf', 'AccountPaylableController@ExportPDF');
 });
