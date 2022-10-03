@@ -174,7 +174,39 @@ class AccountPaylableController extends Controller
         $newAccountPaylableDetail->pay_amount = $payAmount;
         $newAccountPaylableDetail->pay_date = $request->pay_date;
         $newAccountPaylableDetail->save();
+        $accountPaylableDetails = AccountPaylableDetail::where('account_paylable_id',$apId)->get();
+        foreach($accountPaylableDetails as $apd){
+            $totalBayar[] = $apd->pay_amount;
+        }
+        $accountPaylable = AccountPaylable::find($apId);
+        if(array_sum($totalBayar) >= $accountPaylable->debt){
+            $accountPaylable->status = 'Lunas';
+            $accountPaylable->save();
+        }
+
         Alert::success('Berhasil', 'Catatan hutang berhasil dibuat.');
         return redirect()->back();
+    }
+    public function ExportPDF(Request $request)
+    {
+        $tanggal = Carbon::now()->format('d-m-Y');
+        if($request->debtDate == null || $request->debtDate == ''){
+            $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->get();
+        }else{
+            $accountPaylables = AccountPaylable::orderBy('debt_date','DESC')->where('debt_date',$request->debtDate)->get();
+        }
+        $accountPaylableDetails = AccountPaylableDetail::all();
+        foreach($accountPaylables as $ap){
+            foreach($accountPaylableDetails as $apd){
+                $totalBayar[$ap->account_paylable_id][] = ($ap->account_paylable_id == $apd->account_paylable_id) ? $apd->pay_amount : 0;
+
+            }
+        }
+
+        $pdf = PDF::loadView('admin.account_paylable.export_pdf_piutang',compact(['totalBayar','accountPaylables']));
+        $fileName =  'Laporan Hutang Piutang.'.$tanggal.'.pdf' ;
+
+
+        return $pdf->stream();
     }
 }

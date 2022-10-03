@@ -59,5 +59,5 @@ Route::prefix('hutang')->group(function () {
     Route::post('atur_tanggal/{apId}', 'AccountPaylableController@debtAturTanggal');
     Route::post('bayar/{apId}', 'AccountPaylableController@debtPay');
     // Route::post('export_excel', 'AccountPaylableController@exportExcel');
-    // Route::get('export_pdf', 'AccountPaylableController@ExportPDF');
+    Route::get('export_pdf', 'AccountPaylableController@ExportPDF');
 });
