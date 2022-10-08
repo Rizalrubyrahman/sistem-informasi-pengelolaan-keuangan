@@ -227,7 +227,7 @@
             <button type="submit" class="btn btn-danger" id="btnExportPDF" formtarget="_blank"><i class="fas fa-file-pdf" ></i> Unduh PDF</button>
     </form>
 
-            <button type="button" class="btn btn-success" id="btnExportExcel"><i class="fas fa-file-excel"></i> Unduh Excel</button>
+            {{-- <button type="button" class="btn btn-success" id="btnExportExcel"><i class="fas fa-file-excel"></i> Unduh Excel</button> --}}
 
         </div>
         <input type="hidden" name="date" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" id="dateNow">
