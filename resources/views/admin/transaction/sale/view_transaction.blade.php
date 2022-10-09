@@ -126,7 +126,7 @@
                     </tr>
                     <tr style="height: 10px;padding:0">
                         <td colspan="2" style="height: 10px;padding:0">
-                            <a href="">
+                            {{-- <a href="">
                                 <button class="btn " style="height: 30px; width:100%;">
                                     <div class="d-flex justify-content-between">
                                         <span>
@@ -138,7 +138,7 @@
                                     </div>
 
                                 </button>
-                            </a>
+                            </a> --}}
                         </td>
                     </tr>
                 </table>
@@ -371,10 +371,12 @@
         })
         $('#sortBy').on('change',function(){
             $value=$(this).val();
+            $toDate=$('#toDate').val();
+            $fromDate=$('#fromDate').val();
             $.ajax({
                     type : 'get',
                     url : '{{url("/transaksi/sort_by")}}',
-                    data:{'search':$value},
+                    data:{'search':$value,'fromDate':$fromDate,'toDate':$toDate},
                     success:function(data){
                         $('#list').html(data);
                     }

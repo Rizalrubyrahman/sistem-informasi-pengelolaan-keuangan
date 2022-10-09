@@ -31,7 +31,7 @@ Route::prefix('produk')->group(function () {
     Route::post('hapus/{productId}', 'ProductController@productDelete');
 });
 Route::prefix('transaksi')->group(function () {
-    Route::get('/','AccountPaylableController@transactionView');
+    Route::get('/','TransactionController@transactionView');
     Route::get('tambah','TransactionController@transactionInput');
     Route::post('tambah','TransactionController@transactionStore');
     Route::get('cari','TransactionController@transactionSearch');

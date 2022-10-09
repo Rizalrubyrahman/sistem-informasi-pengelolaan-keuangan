@@ -174,10 +174,12 @@ $('#transactionSearch').on('keyup',function(){
         })
         $('#sortBy').on('change',function(){
             $value=$(this).val();
+            $toDate=$('#toDate').val();
+            $fromDate=$('#fromDate').val();
             $.ajax({
                     type : 'get',
                     url : '{{url("/transaksi/sort_by")}}',
-                    data:{'search':$value},
+                    data:{'search':$value,'fromDate':$fromDate,'toDate':$toDate},
                     success:function(data){
                         $('#list').html(data);
                     }
