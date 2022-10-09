@@ -76,11 +76,11 @@ class TransactionController extends Controller
     {
         $output="";
         if($request->search == 1){
-            $saleTransactions = SaleTransaction::orderBy('date','DESC')->get();
+            $saleTransactions = SaleTransaction::whereBetween('date',[$request->fromDate,$request->toDate])->orderBy('date','DESC')->get();
         }else if($request->search == 2){
-            $saleTransactions = SaleTransaction::orderBy('date','ASC')->get();
+            $saleTransactions = SaleTransaction::whereBetween('date',[$request->fromDate,$request->toDate])->orderBy('date','ASC')->get();
         }else {
-            $saleTransactions = SaleTransaction::orderBy('date')->get();
+            $saleTransactions = SaleTransaction::whereBetween('date',[$request->fromDate,$request->toDate])->orderBy('date')->get();
         }
         return view('admin.transaction.sale.list_transaction',compact(['saleTransactions']));
 
@@ -139,6 +139,7 @@ class TransactionController extends Controller
         ],$messages);
         if($validate->passes())
         {
+            $updateSaleTransaction = SaleTransaction::find($transactionId);
 
             if ($request->hasFile('bukti_pembayaran')) {
                 $images_name  = time().'.'.$imageBukti->getClientOriginalExtension();
@@ -147,10 +148,9 @@ class TransactionController extends Controller
                 $imageBukti->move($destinationPath, $prefix_name.$images_name);
                 $buktiPembayaran = $prefix_name.$images_name;
             }else{
-                $buktiPembayaran = null;
+                $buktiPembayaran = $updateSaleTransaction->file;
             }
 
-            $updateSaleTransaction = SaleTransaction::find($transactionId);
             $updateSaleTransaction->payment_method_id = $request->payment_method;
             $updateSaleTransaction->sale_channel_id = $request->sale_channel;
             $updateSaleTransaction->date = $request->date;
